@@ -1,5 +1,6 @@
 # ayotbl
 
+
 A friendlier, fully-typed Telegram Bot API library for Node.js — works equally
 well from plain JavaScript or TypeScript. Targets **Bot API 7.0 through 10.2**.
 Core method coverage was diffed against telegraf v4's own method inventory
@@ -312,5 +313,6 @@ real long polling against a live bot.
 - No CI (GitHub Actions running `npm test` on every push).
 
 
-#   a y o t b l  
+#   a y o t b l 
+ 
  
