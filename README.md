@@ -9,7 +9,7 @@ Works equally well from plain JavaScript or TypeScript. Targets **Bot API 7.0 th
 <p>
   <a href="https://www.npmjs.com/package/ayotbl"><img src="https://img.shields.io/npm/v/ayotbl?style=flat-square&color=blue" alt="npm version"></a>
   <a href="https://www.npmjs.com/package/ayotbl"><img src="https://img.shields.io/npm/dm/ayotbl?style=flat-square&color=green" alt="npm downloads"></a>
-  <a href="https://github.com/yourusername/ayotbl/actions"><img src="https://img.shields.io/github/actions/workflow/status/AyoFemi10/ayotbl/test.yml?style=flat-square" alt="CI"></a>
+  <a href="https://github.com/AyoFemi10/ayotbl/actions"><img src="https://img.shields.io/github/actions/workflow/status/AyoFemi10/ayotbl/test.yml?style=flat-square" alt="CI"></a>
   <img src="https://img.shields.io/badge/zero%20runtime%20deps-✓-brightgreen?style=flat-square" alt="Zero runtime dependencies">
   <img src="https://img.shields.io/badge/Node.js-%3E%3D18-blue?style=flat-square&logo=node.js" alt="Node.js">
 </p>
