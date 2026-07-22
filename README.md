@@ -9,7 +9,7 @@ Works equally well from plain JavaScript or TypeScript. Targets **Bot API 7.0 th
 <p>
   <a href="https://www.npmjs.com/package/ayotbl"><img src="https://img.shields.io/npm/v/ayotbl?style=flat-square&color=blue" alt="npm version"></a>
   <a href="https://www.npmjs.com/package/ayotbl"><img src="https://img.shields.io/npm/dm/ayotbl?style=flat-square&color=green" alt="npm downloads"></a>
-  <a href="https://github.com/yourusername/ayotbl/actions"><img src="https://img.shields.io/github/actions/workflow/status/yourusername/ayotbl/test.yml?style=flat-square" alt="CI"></a>
+  <a href="https://github.com/yourusername/ayotbl/actions"><img src="https://img.shields.io/github/actions/workflow/status/AyoFemi10/ayotbl/test.yml?style=flat-square" alt="CI"></a>
   <img src="https://img.shields.io/badge/zero%20runtime%20deps-✓-brightgreen?style=flat-square" alt="Zero runtime dependencies">
   <img src="https://img.shields.io/badge/Node.js-%3E%3D18-blue?style=flat-square&logo=node.js" alt="Node.js">
 </p>
@@ -300,6 +300,8 @@ See [Status](#status).
 
 ### Verified
 - Full build pipeline (`tsc` → 66 tests → JS smoke test → real-decorator smoke test)
+- Newer/higher-confidence feature areas (Rich Messages, Ephemeral Messages, Gifts,
+  Stars, Business accounts)
 - Core method coverage diffed against telegraf v4's actual published method list
 - Newer areas verified against the official changelog directly
 - **Live-tested against real Telegram servers**: `getMe()`, `getWebhookInfo()`, and the
@@ -313,8 +315,6 @@ See [Status](#status).
 - Webhook mode (code is there, not live-tested)
 - Scenes/sessions in a live multi-turn conversation
 - File uploads (sending a Buffer via `sendPhoto`/`sendDocument`)
-- Newer/lower-confidence feature areas (Rich Messages, Ephemeral Messages, Gifts,
-  Stars, Business accounts) — sent to mocked `fetch` in tests, never a real server
 - Streaming file uploads (Buffers only; local file *paths* aren't supported yet,
   unlike telegraf's `{ source: path }` form)
 - Production mileage or community — telegraf and aiogram have years of real-world
