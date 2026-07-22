@@ -292,6 +292,10 @@ export class Api {
   sendAnimation(params: { chat_id: T.ChatId; animation: T.InputFile; caption?: string; width?: T.Integer; height?: T.Integer; duration?: T.Integer; has_spoiler?: boolean; show_caption_above_media?: boolean } & CommonSendOptions) {
     return this.call<T.Message>("sendAnimation", params);
   }
+  /** Was missing entirely despite being one of the most common Bot API methods — found while auditing Context.replyWithSticker's fallback to the raw call() escape hatch. */
+  sendSticker(params: { chat_id: T.ChatId; sticker: T.InputFile; emoji?: string } & CommonSendOptions) {
+    return this.call<T.Message>("sendSticker", params);
+  }
   sendVoice(params: { chat_id: T.ChatId; voice: T.InputFile; caption?: string; duration?: T.Integer } & CommonSendOptions) {
     return this.call<T.Message>("sendVoice", params);
   }

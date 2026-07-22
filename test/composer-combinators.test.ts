@@ -57,6 +57,58 @@ test("Composer.compose() combines middlewares into one that can be reused elsewh
   assert.deepEqual(order, ["first", "second"]);
 });
 
+test("chatType()/privateChat()/groupChat() gate on the chat's type", async () => {
+  function ctxWithChatType(type: "private" | "group" | "supergroup"): Context {
+    const message = {
+      message_id: 1, date: Date.now() / 1000,
+      chat: { id: 1, type, first_name: type === "private" ? "Alice" : undefined, title: type !== "private" ? "Group" : undefined },
+      from: { id: 2, is_bot: false, first_name: "Alice" },
+      text: "hi",
+    } as any;
+    return new Context({ update_id: 1, message }, fakeApi, fakeBotInfo);
+  }
+
+  const composer = new Composer<Context>();
+  const hits: string[] = [];
+  composer.privateChat(() => { hits.push("private"); });
+  composer.groupChat(() => { hits.push("group"); });
+
+  await composer.handle(ctxWithChatType("private"));
+  await composer.handle(ctxWithChatType("group"));
+  await composer.handle(ctxWithChatType("supergroup"));
+
+  assert.deepEqual(hits, ["private", "group", "group"], "supergroup should match groupChat() too");
+});
+
+test("admin()/creator() gate based on getChatMember status, verified via mocked fetch", async () => {
+  const originalFetch = global.fetch;
+  let statusToReturn = "member";
+  (global as any).fetch = (async () =>
+    new Response(JSON.stringify({ ok: true, result: { status: statusToReturn, user: { id: 2, is_bot: false, first_name: "A" } } }), { status: 200 })) as typeof fetch;
+
+  try {
+    const composer = new Composer<Context>();
+    const hits: string[] = [];
+    composer.admin(() => { hits.push("admin-passed"); });
+
+    await composer.handle(ctxFor("hi")); // status: member -> should NOT pass
+    assert.deepEqual(hits, []);
+
+    statusToReturn = "administrator";
+    await composer.handle(ctxFor("hi")); // status: administrator -> should pass
+    assert.deepEqual(hits, ["admin-passed"]);
+
+    statusToReturn = "creator";
+    const creatorComposer = new Composer<Context>();
+    const creatorHits: string[] = [];
+    creatorComposer.creator(() => { creatorHits.push("creator-passed"); });
+    await creatorComposer.handle(ctxFor("hi"));
+    assert.deepEqual(creatorHits, ["creator-passed"]);
+  } finally {
+    (global as any).fetch = originalFetch;
+  }
+});
+
 test("Router dispatches based on a derived key, falling back to otherwise()", async () => {
   const router = new Router<Context>((ctx) => (ctx.text === "en" ? "en" : ctx.text === "fr" ? "fr" : undefined));
   const seen: string[] = [];

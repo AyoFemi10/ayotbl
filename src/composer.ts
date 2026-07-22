@@ -90,6 +90,46 @@ export class Composer<C extends Context = Context> {
     return this.use(...fns);
   }
 
+  /** Only run fns when the update's chat is one of the given types — e.g. chatType('private'), chatType(['group', 'supergroup']). */
+  chatType(type: T.ChatType | T.ChatType[], ...fns: Middleware<C>[]): this {
+    const types = Array.isArray(type) ? type : [type];
+    return this.filter((ctx) => !!ctx.chat && types.includes(ctx.chat.type), ...fns);
+  }
+
+  /** Only run fns in a private (1:1) chat with the bot. */
+  privateChat(...fns: Middleware<C>[]): this {
+    return this.chatType("private", ...fns);
+  }
+
+  /** Only run fns in a group or supergroup. */
+  groupChat(...fns: Middleware<C>[]): this {
+    return this.chatType(["group", "supergroup"], ...fns);
+  }
+
+  /**
+   * Only run fns if the sender is an admin or the creator of the chat.
+   * Makes one getChatMember call per matching update — for high-traffic
+   * chats, consider caching admin lists yourself instead.
+   */
+  admin(...fns: Middleware<C>[]): this {
+    const inner = Composer.compose(fns);
+    return this.use(async (ctx, next) => {
+      if (!ctx.chat || !ctx.from) return;
+      const member = await ctx.api.getChatMember({ chat_id: ctx.chat.id, user_id: ctx.from.id }).catch(() => null);
+      if (member?.status === "administrator" || member?.status === "creator") return inner(ctx, next);
+    });
+  }
+
+  /** Only run fns if the sender is the creator (owner) of the chat. */
+  creator(...fns: Middleware<C>[]): this {
+    const inner = Composer.compose(fns);
+    return this.use(async (ctx, next) => {
+      if (!ctx.chat || !ctx.from) return;
+      const member = await ctx.api.getChatMember({ chat_id: ctx.chat.id, user_id: ctx.from.id }).catch(() => null);
+      if (member?.status === "creator") return inner(ctx, next);
+    });
+  }
+
   /** Alias for filter() matching telegraf's naming — run fns only when predicate(ctx) is true. */
   optional(predicate: Predicate<C>, ...fns: Middleware<C>[]): this {
     return this.filter(predicate, ...fns);

@@ -52,6 +52,11 @@ test("ReplyKeyboardBuilder defaults resize_keyboard to true when not specified",
   assert.equal(kb.resize_keyboard, true);
 });
 
+test("InlineKeyboardBuilder.urlButton() is an alias for .url()", () => {
+  const kb = Keyboard.inline().urlButton("Join Channel", "https://t.me/example").build();
+  assert.deepEqual(kb.inline_keyboard[0][0], { text: "Join Channel", url: "https://t.me/example" });
+});
+
 test("Keyboard.remove() and Keyboard.forceReply() produce the expected shapes", () => {
   assert.deepEqual(Keyboard.remove(), { remove_keyboard: true, selective: false });
   assert.deepEqual(Keyboard.remove(true), { remove_keyboard: true, selective: true });

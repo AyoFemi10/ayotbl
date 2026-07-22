@@ -1,6 +1,6 @@
 {
   "name": "ayotbl",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A friendlier, fully-typed Telegram Bot API library for Node.js/TypeScript — every method, three ways to write handlers, one bot.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -14,7 +14,7 @@
     "prepublishOnly": "npm test"
   },
   "keywords": ["telegram", "bot", "telegram-bot", "bot-api", "ayotbl", "typescript"],
-  "author": "",
+  "author": "Ayomikun Dev",
   "license": "MIT",
   "engines": { "node": ">=18" },
   "dependencies": {},

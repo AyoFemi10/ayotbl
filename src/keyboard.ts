@@ -21,6 +21,10 @@ export class InlineKeyboardBuilder {
     this.current().push({ text, url, ...extra });
     return this;
   }
+  /** Alias for url() — a plausible guessed name given how other libraries phrase this, so it's accepted rather than throwing "not a function". */
+  urlButton(text: string, url: string, extra: { style?: "primary" | "success" | "danger"; icon_custom_emoji_id?: string } = {}): this {
+    return this.url(text, url, extra);
+  }
   webApp(text: string, url: string): this {
     this.current().push({ text, web_app: { url } });
     return this;

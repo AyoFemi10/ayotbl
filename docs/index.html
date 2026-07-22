@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ayotbl — docs</title>
+<meta name="description" content="Documentation for ayotbl, a Telegram Bot API library for Node.js covering Bot API 7.0 through 10.2.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0B0E14;
+    --surface: #12161F;
+    --surface-2: #171C27;
+    --border: #212734;
+    --border-soft: #1A2029;
+    --text: #E7E9EE;
+    --text-muted: #8B92A3;
+    --text-faint: #545C6C;
+    --primary: #5B8DEF;
+    --primary-soft: rgba(91,141,239,0.12);
+    --success: #34D399;
+    --success-soft: rgba(52,211,153,0.12);
+    --danger: #F87171;
+    --danger-soft: rgba(248,113,113,0.12);
+    --radius: 10px;
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-body: 'IBM Plex Sans', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+    --sidebar-w: 272px;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 15.5px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  ::selection { background: var(--primary-soft); }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+    html { scroll-behavior: auto; }
+  }
+
+  /* ---------- Skip link ---------- */
+  .skip-link {
+    position: absolute; left: -999px; top: 0; z-index: 200;
+    background: var(--primary); color: #060810; padding: 10px 16px;
+    border-radius: 0 0 8px 0; font-family: var(--font-body); font-weight: 600;
+  }
+  .skip-link:focus { left: 0; }
+
+  /* ---------- Top bar (mobile) ---------- */
+  .topbar {
+    display: none;
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(11,14,20,0.92); backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 18px;
+    align-items: center; justify-content: space-between;
+  }
+  .topbar .brand { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; display:flex; align-items:center; gap:8px; }
+  .menu-btn {
+    background: var(--surface-2); border: 1px solid var(--border); color: var(--text);
+    border-radius: 8px; padding: 8px 10px; font-size: 1rem; cursor: pointer;
+  }
+  .menu-btn:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar {
+    position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w);
+    background: var(--surface); border-right: 1px solid var(--border);
+    overflow-y: auto; padding: 28px 20px 60px;
+    z-index: 40;
+  }
+  .sidebar-brand {
+    display: flex; align-items: center; gap: 10px;
+    font-family: var(--font-display); font-weight: 700; font-size: 1.3rem;
+    margin-bottom: 4px; text-decoration: none; color: var(--text);
+  }
+  .sidebar-brand .dot-primary { color: var(--primary); }
+  .sidebar-tagline { color: var(--text-faint); font-size: 0.78rem; margin: 0 0 26px; font-family: var(--font-mono); }
+  .nav-group { margin-bottom: 22px; }
+  .nav-group-label {
+    font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--text-faint); margin: 0 0 8px; padding-left: 10px;
+  }
+  .nav-group a {
+    display: block; text-decoration: none; color: var(--text-muted);
+    font-size: 0.87rem; padding: 6px 10px; border-radius: 7px; margin-bottom: 1px;
+    border-left: 2px solid transparent;
+    transition: background 0.12s ease, color 0.12s ease;
+  }
+  .nav-group a:hover { background: var(--surface-2); color: var(--text); }
+  .nav-group a.active { color: var(--primary); border-left-color: var(--primary); background: var(--primary-soft); font-weight: 500; }
+  .nav-group a:focus-visible { outline: 2px solid var(--primary); outline-offset: -2px; }
+
+  /* ---------- Main content ---------- */
+  .main { margin-left: var(--sidebar-w); max-width: 860px; padding: 0 48px 120px; }
+  .content-inner { padding-top: 8px; }
+
+  section { scroll-margin-top: 24px; }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    padding: 72px 0 40px;
+    border-bottom: 1px solid var(--border-soft);
+    margin-bottom: 56px;
+  }
+  .hero-eyebrow {
+    font-family: var(--font-mono); font-size: 0.78rem; color: var(--success);
+    display: flex; align-items: center; gap: 8px; margin-bottom: 18px;
+  }
+  .hero-eyebrow .pulse {
+    width: 7px; height: 7px; border-radius: 50%; background: var(--success);
+    box-shadow: 0 0 0 0 rgba(52,211,153,0.6);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(52,211,153,0.5); }
+    70% { box-shadow: 0 0 0 7px rgba(52,211,153,0); }
+    100% { box-shadow: 0 0 0 0 rgba(52,211,153,0); }
+  }
+  h1.hero-title {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(2.2rem, 5vw, 3.1rem); line-height: 1.08; letter-spacing: -0.01em;
+    margin: 0 0 20px;
+  }
+  h1.hero-title .accent { color: var(--primary); }
+  .hero-sub { color: var(--text-muted); font-size: 1.08rem; max-width: 560px; margin: 0 0 30px; }
+  .hero-badges { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 34px; }
+  .badge {
+    font-family: var(--font-mono); font-size: 0.75rem; padding: 5px 10px; border-radius: 6px;
+    border: 1px solid var(--border); color: var(--text-muted); background: var(--surface);
+  }
+  .badge.b-success { color: var(--success); border-color: rgba(52,211,153,0.25); background: var(--success-soft); }
+  .badge.b-primary { color: var(--primary); border-color: rgba(91,141,239,0.25); background: var(--primary-soft); }
+
+  .install-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 40px; }
+  .install-cmd {
+    font-family: var(--font-mono); font-size: 0.92rem; background: var(--surface);
+    border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px;
+    display: flex; align-items: center; gap: 10px; color: var(--text);
+  }
+  .install-cmd::before { content: "$"; color: var(--text-faint); }
+  .copy-btn {
+    background: var(--surface-2); border: 1px solid var(--border); color: var(--text-muted);
+    border-radius: 6px; padding: 4px 9px; font-family: var(--font-mono); font-size: 0.72rem;
+    cursor: pointer; margin-left: auto;
+  }
+  .copy-btn:hover { color: var(--text); border-color: var(--primary); }
+  .copy-btn:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
+
+  /* ---------- Signature demo: simulated Telegram chat ---------- */
+  .demo-phone {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    padding: 20px; max-width: 380px;
+  }
+  .demo-phone-header {
+    display: flex; align-items: center; gap: 10px; padding-bottom: 14px; margin-bottom: 16px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .demo-avatar {
+    width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), #3D5FA8);
+    display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 700; font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+  .demo-phone-header .name { font-weight: 600; font-size: 0.92rem; }
+  .demo-phone-header .status { color: var(--success); font-size: 0.72rem; font-family: var(--font-mono); }
+  .demo-bubbles { display: flex; flex-direction: column; gap: 10px; min-height: 210px; }
+  .bubble {
+    max-width: 78%; padding: 9px 13px; border-radius: 14px; font-size: 0.88rem;
+    opacity: 0; transform: translateY(6px); animation: bubbleIn 0.35s ease forwards;
+  }
+  .bubble.user { align-self: flex-end; background: var(--primary); color: #060810; border-bottom-right-radius: 4px; }
+  .bubble.bot { align-self: flex-start; background: var(--surface-2); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
+  @keyframes bubbleIn { to { opacity: 1; transform: translateY(0); } }
+  .demo-kb { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; align-self: flex-start; max-width: 90%; opacity: 0; animation: bubbleIn 0.35s ease forwards; }
+  .demo-kb-btn {
+    font-size: 0.78rem; padding: 7px 12px; border-radius: 8px; border: 1px solid;
+    font-family: var(--font-body); font-weight: 500;
+  }
+  .demo-kb-btn.success { color: var(--success); border-color: rgba(52,211,153,0.35); background: var(--success-soft); }
+  .demo-kb-btn.danger { color: var(--danger); border-color: rgba(248,113,113,0.35); background: var(--danger-soft); }
+  .demo-typing { display: flex; gap: 4px; padding: 10px 13px; align-self: flex-start; }
+  .demo-typing span { width: 6px; height: 6px; border-radius: 50%; background: var(--text-faint); animation: typingDot 1.1s infinite; }
+  .demo-typing span:nth-child(2) { animation-delay: 0.15s; }
+  .demo-typing span:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes typingDot { 0%, 60%, 100% { opacity: 0.3; transform: translateY(0); } 30% { opacity: 1; transform: translateY(-3px); } }
+
+  /* ---------- Typography ---------- */
+  h2 {
+    font-family: var(--font-display); font-weight: 600; font-size: 1.6rem;
+    margin: 0 0 6px; padding-top: 8px; letter-spacing: -0.005em;
+  }
+  h2 .h2-eyebrow { display: block; font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-faint); font-weight: 400; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.08em; }
+  h3 { font-family: var(--font-display); font-weight: 600; font-size: 1.12rem; margin: 30px 0 10px; }
+  p { color: var(--text-muted); margin: 0 0 16px; }
+  p code, li code { font-family: var(--font-mono); font-size: 0.85em; background: var(--surface-2); border: 1px solid var(--border); padding: 1.5px 6px; border-radius: 5px; color: var(--text); }
+  ul, ol { color: var(--text-muted); padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  .section-block { margin-bottom: 52px; }
+  .lead { font-size: 1rem; color: var(--text-muted); }
+
+  /* ---------- Code blocks ---------- */
+  .code-wrap { position: relative; margin: 14px 0 22px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
+  .code-label {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--surface-2); padding: 8px 14px; font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-faint);
+    border-bottom: 1px solid var(--border);
+  }
+  .code-wrap pre { margin: 0 !important; border-radius: 0 !important; font-size: 0.84rem !important; }
+  .code-wrap pre[class*="language-"] { background: #0D1017 !important; }
+  .code-copy {
+    background: transparent; border: none; color: var(--text-faint); cursor: pointer;
+    font-family: var(--font-mono); font-size: 0.7rem; padding: 2px 6px; border-radius: 4px;
+  }
+  .code-copy:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+
+  /* ---------- Comparison table ---------- */
+  .table-wrap { overflow-x: auto; margin: 18px 0 30px; border: 1px solid var(--border); border-radius: 10px; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+  th, td { text-align: left; padding: 11px 16px; border-bottom: 1px solid var(--border-soft); }
+  th { font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-faint); background: var(--surface); }
+  td { color: var(--text-muted); }
+  tr:last-child td { border-bottom: none; }
+  .yes { color: var(--success); }
+  .no { color: var(--danger); }
+  .confidence-high { color: var(--success); font-weight: 500; }
+  .confidence-med { color: #E0B84C; font-weight: 500; }
+  .confidence-low { color: var(--danger); font-weight: 500; }
+
+  /* ---------- Version guide ---------- */
+  .version-card {
+    border: 1px solid var(--border); border-radius: 12px; padding: 24px 26px; margin-bottom: 20px;
+    background: var(--surface);
+  }
+  .version-header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 4px; flex-wrap: wrap; }
+  .version-tag {
+    font-family: var(--font-mono); font-weight: 500; font-size: 0.95rem;
+    color: var(--primary); background: var(--primary-soft); padding: 3px 10px; border-radius: 6px;
+    border: 1px solid rgba(91,141,239,0.25);
+  }
+  .version-title { font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; }
+  .version-date { font-family: var(--font-mono); font-size: 0.74rem; color: var(--text-faint); margin-left: auto; }
+  .version-desc { color: var(--text-muted); font-size: 0.92rem; margin: 8px 0 4px; }
+
+  /* ---------- Callouts ---------- */
+  .callout {
+    border-left: 3px solid var(--primary); background: var(--primary-soft);
+    padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 18px 0 24px; font-size: 0.9rem; color: var(--text);
+  }
+  .callout.warn { border-left-color: var(--danger); background: var(--danger-soft); }
+  .callout strong { color: inherit; }
+  .callout p { color: var(--text); margin: 0; }
+  .callout p + p { margin-top: 8px; }
+
+  /* ---------- Footer ---------- */
+  .site-footer { border-top: 1px solid var(--border-soft); padding-top: 32px; margin-top: 60px; color: var(--text-faint); font-size: 0.85rem; }
+  .site-footer a { color: var(--text-muted); text-decoration: underline; text-decoration-color: var(--border); }
+  .site-footer a:hover { color: var(--primary); }
+
+  /* ---------- Mobile ---------- */
+  @media (max-width: 900px) {
+    .topbar { display: flex; }
+    .sidebar {
+      transform: translateX(-100%); transition: transform 0.2s ease;
+      width: min(84vw, 320px);
+    }
+    .sidebar.open { transform: translateX(0); box-shadow: 20px 0 40px rgba(0,0,0,0.4); }
+    .main { margin-left: 0; padding: 0 20px 100px; }
+    .hero { padding-top: 40px; }
+    .backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 39; }
+    .backdrop.show { display: block; }
+  }
+</style>
+</head>
+<body>
+
+<a href="#top" class="skip-link">Skip to content</a>
+
+<div class="topbar">
+  <a href="#top" class="brand"><span style="color:var(--primary)">ayo</span>tbl</a>
+  <button class="menu-btn" id="menuBtn" aria-label="Open navigation" aria-expanded="false">☰ Menu</button>
+</div>
+<div class="backdrop" id="backdrop"></div>
+
+<nav class="sidebar" id="sidebar" aria-label="Documentation navigation">
+  <a href="#top" class="sidebar-brand"><span class="dot-primary">●</span> ayotbl</a>
+  <p class="sidebar-tagline">Bot API 7.0 – 10.2</p>
+
+  <div class="nav-group">
+    <p class="nav-group-label">Start</p>
+    <a href="#intro">Introduction</a>
+    <a href="#install">Installation</a>
+    <a href="#quickstart">Quick start</a>
+  </div>
+
+  <div class="nav-group">
+    <p class="nav-group-label">Guide</p>
+    <a href="#handler-styles">Three handler styles</a>
+    <a href="#keyboards">Keyboards</a>
+    <a href="#editing">Editing on button taps</a>
+    <a href="#rich-messages">Rich Messages</a>
+    <a href="#scenes">Scenes</a>
+    <a href="#sessions">Sessions</a>
+    <a href="#gates">Chat &amp; role gates</a>
+    <a href="#i18n">i18n</a>
+    <a href="#flood">Flood control</a>
+    <a href="#serverless">Serverless deploy</a>
+    <a href="#escape-hatch">The escape hatch</a>
+  </div>
+
+  <div class="nav-group">
+    <p class="nav-group-label">Bot API by version</p>
+    <a href="#v7">7.0 – 7.11</a>
+    <a href="#v8">8.0 – 8.3</a>
+    <a href="#v9">9.0 – 9.6</a>
+    <a href="#v10">10.0 – 10.2</a>
+  </div>
+
+  <div class="nav-group">
+    <p class="nav-group-label">Reference</p>
+    <a href="#comparison">vs. telegraf / aiogram</a>
+    <a href="#coverage">Coverage confidence</a>
+    <a href="#status">Status &amp; testing</a>
+  </div>
+</nav>
+
+<main class="main" id="top">
+  <div class="content-inner">
+
+    <!-- ============ HERO ============ -->
+    <header class="hero">
+      <div class="hero-eyebrow"><span class="pulse"></span> v0.2.0 · Bot API 7.0–10.2</div>
+      <h1 class="hero-title">Telegram bots that read<br>like <span class="accent">what they do</span>.</h1>
+      <p class="hero-sub">A friendlier, fully-typed Telegram Bot API library for Node.js. Works from plain JavaScript or TypeScript. Three ways to write a handler, zero runtime dependencies, and it doesn't wait for a release cycle to catch up to Telegram.</p>
+
+      <div class="hero-badges">
+        <span class="badge b-success">Zero runtime deps</span>
+        <span class="badge b-primary">Node.js ≥ 18</span>
+        <span class="badge">68 tests</span>
+        <span class="badge">MIT licensed</span>
+      </div>
+
+      <div class="install-row">
+        <div class="install-cmd" id="installCmd">npm install ayotbl <button class="copy-btn" data-copy="npm install ayotbl">copy</button></div>
+      </div>
+
+      <!-- Signature: a simulated chat showing the code that produced it -->
+      <div style="display:flex; gap:32px; flex-wrap:wrap; align-items:flex-start;">
+        <div class="demo-phone">
+          <div class="demo-phone-header">
+            <div class="demo-avatar">A</div>
+            <div>
+              <div class="name">ayotbl demo bot</div>
+              <div class="status">● online</div>
+            </div>
+          </div>
+          <div class="demo-bubbles" id="demoBubbles"></div>
+        </div>
+        <div style="flex:1; min-width:280px;">
+          <div class="code-label" style="border-radius:8px 8px 0 0;">bot.ts</div>
+          <div class="code-wrap" style="margin-top:0; border-top:none; border-radius:0 0 10px 10px;">
+<pre class="language-typescript"><code class="language-typescript">bot.command("start", (ctx) =>
+  ctx.reply(`Hey ${ctx.from?.first_name}!`, {
+    reply_markup: Keyboard.inline()
+      .button("Confirm", "yes", { style: "success" })
+      .button("Cancel", "no", { style: "danger" })
+      .build(),
+  })
+);</code></pre>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ============ INTRO ============ -->
+    <section class="section-block" id="intro">
+      <h2>Introduction</h2>
+      <p class="lead">Most Telegram bot libraries make you choose between ease of use and type safety. ayotbl aims for both — and tries to stay current with Telegram's API without waiting on a library release cycle. Every method not yet given a typed wrapper still works through an escape hatch, so a brand-new Bot API method works the same day Telegram ships it.</p>
+      <p>This site documents every guide topic and walks through Bot API 7.0 through 10.2 version by version, with real, runnable code for each headline feature — not just a class-member dump.</p>
+    </section>
+
+    <!-- ============ INSTALL ============ -->
+    <section class="section-block" id="install">
+      <h2><span class="h2-eyebrow">Getting started</span>Installation</h2>
+      <div class="code-label">terminal</div>
+      <div class="code-wrap" style="margin-top:0;"><pre class="language-bash"><code class="language-bash">npm install ayotbl</code></pre></div>
+      <p>Requires Node.js 18+. ayotbl uses the native <code>fetch</code>, <code>FormData</code>, and <code>Blob</code> globals — there is nothing else to install.</p>
+    </section>
+
+    <!-- ============ QUICK START ============ -->
+    <section class="section-block" id="quickstart">
+      <h2>Quick start</h2>
+      <div class="code-label">bot.ts</div>
+      <div class="code-wrap" style="margin-top:0;"><pre class="language-typescript"><code class="language-typescript">import { Bot } from "ayotbl";
+
+const bot = new Bot(process.env.BOT_TOKEN!);
+
+bot.command("start", (ctx) => ctx.reply(`Hey ${ctx.from?.first_name}!`));
+bot.hears(/^ping$/i, (ctx) => ctx.reply("pong"));
+bot.on("photo", (ctx) => ctx.reply("Nice photo!"));
+
+bot.launch(); // long polling</code></pre></div>
+
+      <h3>Webhooks, one line</h3>
+      <div class="code-wrap" style="margin-top:0;"><pre class="language-typescript"><code class="language-typescript">await bot.launchWebhook({ url: "https://your-domain.com", port: 8080 });
+// or mount bot.webhookCallback('/webhook') into Express/Fastify/raw http yourself</code></pre></div>
+    </section>
+
+    <!-- ============ HANDLER STYLES ============ -->
+    <section class="section-block" id="handler-styles">
+      <h2><span class="h2-eyebrow">Guide</span>Three ways to write a handler</h2>
+      <p>Pick whichever reads best for the moment. Mix freely — a decorator controller and a plain <code>bot.command()</code> call can coexist in the same bot, since decorators register onto the same underlying router.</p>
+
+      <h3>1. Simple router</h3>
+      <div class="code-wrap" style="margin-top:0;"><pre class="language-typescript"><code class="language-typescript">bot.command('start', ctx => ctx.reply('hi'));
+bot.hears(/^ping$/i, ctx => ctx.reply('pong'));</code></pre></div>
+
+      <h3>2. Fluent builders</h3>
+      <div class="code-wrap" style="margin-top:0;"><pre class="language-typescript"><code class="language-typescript">import { Keyboard, RichMessage } from "ayotbl";
+
+bot.command("report", (ctx) =>
+  ctx.replyRich(
+    RichMessage.markdown()
+      .text("Build report:")
+      .table(["Step", "Status"], [["Install", "✅"], ["Deploy", "⏳"]])
+      .checklist(["Install deps", "Run tests"])
+      .build()
+  )
+);</code></pre></div>
+
+      <h3>3. Decorator classes</h3>
+      <div class="code-wrap" style="margin-top:0;"><pre class="language-typescript"><code class="language-typescript">import { Bot, Context, Command, Hears } from "ayotbl";
+
+class MainController {
+  @Command("start")
+  start(ctx: Context) { return ctx.reply("Welcome!"); }
+
+  @Hears(/^thanks?$/i)
+  thanks(ctx: Context) { return ctx.reply("You're welcome!"); }
+}
+
+bot.useController(new MainController());</code></pre></div>
+      <p style="font-size:0.85rem;">Decorators use standard <code>experimentalDecorators</code> TypeScript output — a real <code>tsc</code> build (what npm consumers get) works correctly. If you run raw source through <code>tsx</code> for quick scripts, note that it doesn't honor that flag; compile with <code>tsc</code> first for decorator-based bots.</p>
+    </section>
+
+    <!-- ============ KEYBOARDS ============ -->
+    <section class="section-block" id="keyboards">
+      <h2>Keyboards</h2>
+      <p>Inline keyboards attach buttons to the message itself. Reply keyboards replace the user's system keyboard. Both have fluent builders.</p>
+
+      <h3>Inline keyboard, with styles and custom emoji</h3>
+      <div class="code-wrap" style="margin-top:0;"><pre class="language-typescript"><code class="language-typescript">import { Keyboard } from "ayotbl";
+
+const kb = Keyboard.inline()
+  .button("Confirm", "confirm:yes", { style: "success" })
+  .button("Delete", "confirm:delete", { style: "danger", icon_custom_emoji_id: "5368324170671202286" })
+  .row()
+  .url("Docs", "https://example.com")
+  .copyText("Copy invite code", "AB12-CD34")
+  .build();
+
+await ctx.reply("Are you sure?", { reply_markup: kb });</code></pre></div>
+      <p>Valid <code>style</code> values are <code>"primary" | "success" | "danger"</code>.</p>
+
+      <h3>Reply keyboard</h3>
+      <div class="code-wrap" style="margin-top:0;"><pre class="language-typescript"><code class="language-typescript">const kb = Keyboard.reply()
+  .text("Yes").text("No").row()
+  .requestContact("Share contact")
+  .build({ resize: true, oneTime: true, placeholder: "Choose one" });</code></pre></div>
+    </section>
+
+    <!-- ============ EDITING ============ -->
+    <section class="section-block" id="editing">
+      <h2>Editing messages from button taps</h2>
+      <p>The most common Telegram UI pattern — a user taps a button, the bot edits that exact message — works directly from inside a callback handler.</p>
+      <div class="code-wrap" style="margin-top:0;"><pre class="language-typescript"><code class="language-typescript">bot.action(/^confirm:(yes|no)$/, async (ctx) => {
+  await ctx.answerCbQuery();
+  await ctx.editText(ctx.match![1] === "yes" ? "Confirmed ✅" : "Cancelled ❌");
+});
+
+// ctx.editCaption(), ctx.editMedia(), ctx.editReplyMarkup() work the same way —
+// all resolve the right chat_id/message_id whether you're inside a plain
+// message handler or a callback_query handler.</code></pre></div>
+    </section>
+
+    <!-- ============ RICH MESSAGES ============ -->
+    <section class="section-block" id="rich-messages">
+      <h2>Rich Messages <span class="badge b-primary" style="margin-left:6px;">Bot API 10.1 / 10.2</span></h2>
+      <p>Structured, AI-assistant-style replies: headings, tables, checklists, blockquotes, and streamed drafts. Three ways to build one.</p>
+
+      <h3>Markdown builder</h3>
+      <div class="code-wrap" style="margin-top:0;"><pre class="language-typescript"><code class="language-typescript">import { RichMessage } from "ayotbl";
+
+const rich = RichMessage.markdown()
+  .heading("Build Report")
+  .table(["Step", "Status"], [["Install", "✅"], ["Deploy", "⏳"]])
+  .checklist(["Run tests", { label: "Deploy", done: false }])
+  .build();
+
+await ctx.replyRich(rich);</code></pre></div>
+
+      <h3>Structured blocks (Bot API 10.2)</h3>
+      <p>For when you want guaranteed structure — real table colspan/rowspan — instead of round-tripping through markdown text.</p>
+      <div class="code-wrap" style="margin-top:0;"><pre class="language-typescript"><code class="language-typescript">const rich = RichMessage.blocks()
+  .heading("Title", 2)
+  .table([[{ text: "Header", is_header: true }], [{ text: "Cell" }]], { bordered: true })
+  .details("Show raw logs", [{ type: "paragraph", text: "…" }])
+  .build();</code></pre></div>
+
+      <h3>Streaming a draft while generating</h3>
+      <div class="code-wrap" style="margin-top:0;"><pre class="language-typescript"><code class="language-typescript">// Ephemeral ~30s preview in a private chat — call sendRichMessage with the
+// final content once generation finishes.
+await bot.api.sendRichMessageDraft({
+  chat_id: userId,
+  draft_id: 1,
+  rich_message: RichMessage.markdown().text("Thinking…").build(),
+});</code></pre></div>
+    </section>
+
+    <!-- ============ SCENES ============ -->
+    <section class="section-block" id="scenes">
+      <h2>Multi-step conversations (Scenes)</h2>
+      <div class="code-wrap" style="margin-top:0;"><pre class="language-typescript"><code class="language-typescript">import { Bot, Context, session, Stage, WizardScene } from "ayotbl";
+
+bot.use(session());
+
+const signup = new WizardScene<Context>("signup", [
+  async (ctx) => { await ctx.reply("What's your name?"); await ctx.wizard.next(); },
+  async (ctx) => { ctx.wizard.state.name = ctx.text; await ctx.reply("How old are you?"); await ctx.wizard.next(); },
+  async (ctx) => { await ctx.reply(`Thanks, ${ctx.wizard.state.name}!`); await ctx.scene.leave(); },
+]);
+
+bot.use(new Stage([signup]).middleware());
+bot.command("signup", (ctx) => ctx.scene.enter("signup"));</code></pre></div>
+      <p>Each step runs once per incoming update while the scene is active. Call <code>ctx.wizard.next()</code> when ready to move on — it only advances the pointer, so the next step's body waits for the actual next message rather than firing immediately.</p>
+    </section>
+
+    <!-- ============ SESSIONS ============ -->
+    <section class="section-block" id="sessions">
+      <h2>Sessions</h2>
+      <div class="code-wrap" style="margin-top:0;"><pre class="language-typescript"><code class="language-typescript">import { session, RedisSessionStore } from "ayotbl";
+import Redis from "ioredis";
+
+bot.use(session({ store: new RedisSessionStore(new Redis(), { ttlSeconds: 86400 }) }));
+
+bot.command("count", (ctx) => {
+  ctx.session.count = (ctx.session.count ?? 0) + 1;
+  return ctx.reply(`Count: ${ctx.session.count}`);
+});</code></pre></div>
+      <p>Defaults to <code>MemorySessionStore</code> (fine for local dev; state is lost on restart). Swap in <code>RedisSessionStore</code> for production — same interface, no other code changes.</p>
+    </section>
+
+    <!-- ============ GATES ============ -->
+    <section class="section-block" id="gates">
+      <h2>Chat &amp; role gates</h2>
+      <p>Restrict handlers by chat type or sender role, without hand-rolling the check every time.</p>
+      <div class="code-wrap" style="margin-top:0;"><pre class="language-typescript"><code class="language-typescript">// Only respond to DMs
+bot.privateChat(
+  bot.command("start", (ctx) => ctx.reply("Welcome!"))
+);
+
+// Only in groups/supergroups
+bot.groupChat((ctx, next) => next());
+
+// Only chat admins or the creator (makes one getChatMember call per update)
+bot.admin(
+  bot.command("ban", (ctx) => ctx.reply("Banning…"))
+);
+
+// Only the creator
+bot.creator(
+  bot.command("shutdown", (ctx) => ctx.reply("Shutting down…"))
+);</code></pre></div>
+      <p style="font-size:0.85rem;">Composable with <code>chatType('private' | 'group' | 'supergroup' | 'channel' | ChatType[])</code> for custom combinations.</p>
+    </section>
+
+    <!-- ============ I18N ============ -->
+    <section class="section-block" id="i18n">
+      <h2>i18n</h2>
+      <div class="code-wrap" style="margin-top:0;"><pre class="language-typescript"><code class="language-typescript">import { createI18n } from "ayotbl";
+
+const i18n = createI18n({
+  defaultLocale: "en",
+  locales: {
+    en: { hi: (n: string) => `Hi ${n}!` },
+    fr: { hi: (n: string) => `Salut ${n}!` },
+  },
+});
+bot.use(i18n.middleware());
+bot.command("start", (ctx) => ctx.reply(ctx.t("hi", ctx.from?.first_name)));</code></pre></div>
+      <p>Locale is read from the user's Telegram <code>language_code</code> automatically, with a fallback to <code>defaultLocale</code>.</p>
+    </section>
+
+    <!-- ============ FLOOD CONTROL ============ -->
+    <section class="section-block" id="flood">
+      <h2>Flood control &amp; throttling</h2>
+      <p>429s are retried automatically everywhere — not just the polling loop.</p>
+      <div class="code-wrap" style="margin-top:0;"><pre class="language-typescript"><code class="language-typescript">const bot = new Bot(token, { floodControl: { maxRetries: 5 }, minIntervalMs: 35 });</code></pre></div>
+      <p>Per-chat/per-user rate limiting for <em>incoming</em> updates, so one noisy user can't monopolize the bot:</p>
+      <div class="code-wrap" style="margin-top:0;"><pre class="language-typescript"><code class="language-typescript">import { rateLimit } from "ayotbl";
+bot.use(rateLimit({ windowMs: 2000, limit: 3, onLimitExceeded: (ctx) => ctx.reply("Slow down!") }));</code></pre></div>
+    </section>
+
+    <!-- ============ SERVERLESS ============ -->
+    <section class="section-block" id="serverless">
+      <h2>Serverless deployment</h2>
+      <div class="code-wrap" style="margin-top:0;"><pre class="language-typescript"><code class="language-typescript">// Vercel
+export default vercelWebhookHandler(bot);
+
+// AWS Lambda
+export const handler = lambdaWebhookHandler(bot);
+
+// Cloudflare Workers
+export default { fetch: cloudflareWebhookHandler(bot) };</code></pre></div>
+    </section>
+
+    <!-- ============ ESCAPE HATCH ============ -->
+    <section class="section-block" id="escape-hatch">
+      <h2>Any method, typed or not</h2>
+      <div class="code-wrap" style="margin-top:0;"><pre class="language-typescript"><code class="language-typescript">await bot.api.sendMessage({ chat_id, text: "typed and autocompleted" });
+
+// Works the same day Telegram ships a new method
+await bot.api.call("someBrandNewMethod", { chat_id, whatever: true });</code></pre></div>
+      <p>Every method not yet given a typed wrapper still works — you're never blocked waiting on a library release.</p>
+    </section>
+
+    <!-- ============ BOT API VERSION GUIDE ============ -->
+    <section class="section-block" id="v7" style="margin-top:20px;">
+      <h2><span class="h2-eyebrow">Bot API, version by version</span>7.0 – 7.11</h2>
+      <p>The foundation of the modern Bot API: structured replies, reactions, boosts, giveaways.</p>
+
+      <div class="version-card">
+        <div class="version-header"><span class="version-tag">7.0</span><span class="version-title">ReplyParameters &amp; message reactions</span></div>
+        <p class="version-desc">Replaced the old flat <code>reply_to_message_id</code> with a structured object that can quote part of a message, reply across chats, or react with an emoji.</p>
+        <div class="code-wrap" style="margin-top:12px;"><pre class="language-typescript"><code class="language-typescript">bot.on("text", async (ctx) => {
+  await ctx.api.setMessageReaction({
+    chat_id: ctx.chatId!,
+    message_id: ctx.message!.message_id,
+    reaction: [{ type: "emoji", emoji: "👍" }],
+  });
+
+  await ctx.reply("Got it, quoting your message:", {
+    reply_parameters: {
+      message_id: ctx.message!.message_id,
+      quote: ctx.text?.slice(0, 30),
+    },
+  });
+});</code></pre></div>
+      </div>
+
+      <div class="version-card">
+        <div class="version-header"><span class="version-tag">7.0</span><span class="version-title">Chat boosts &amp; giveaways</span></div>
+        <div class="code-wrap" style="margin-top:12px;"><pre class="language-typescript"><code class="language-typescript">bot.on("chat_boost", (ctx) => {
+  const boost = ctx.update.chat_boost!.boost;
+  return ctx.reply(`New boost, expires ${new Date(boost.expiration_date * 1000).toDateString()}`);
+});
+
+bot.on("message", (ctx) => {
+  if (ctx.message?.giveaway_completed) {
+    return ctx.reply(`Giveaway ended — ${ctx.message.giveaway_completed.winner_count} winners`);
+  }
+});</code></pre></div>
+      </div>
+
+      <div class="version-card">
+        <div class="version-header"><span class="version-tag">7.11</span><span class="version-title">Copy-to-clipboard buttons</span></div>
+        <div class="code-wrap" style="margin-top:12px;"><pre class="language-typescript"><code class="language-typescript">Keyboard.inline().copyText("Copy invite code", "AB12-CD34")</code></pre></div>
+      </div>
+    </section>
+
+    <section class="section-block" id="v8">
+      <h2>8.0 – 8.3</h2>
+      <p>Gifts and Telegram Stars arrive.</p>
+
+      <div class="version-card">
+        <div class="version-header"><span class="version-tag">8.0</span><span class="version-title">Sending a gift</span></div>
+        <div class="code-wrap" style="margin-top:12px;"><pre class="language-typescript"><code class="language-typescript">const { gifts } = await bot.api.getAvailableGifts();
+
+await bot.api.sendGift({
+  gift_id: gifts[0].id,
+  user_id: ctx.from!.id,
+  text: "Enjoy! 🎁",
+});</code></pre></div>
+      </div>
+
+      <div class="version-card">
+        <div class="version-header"><span class="version-tag">8.0</span><span class="version-title">Stars subscription invoice</span></div>
+        <div class="code-wrap" style="margin-top:12px;"><pre class="language-typescript"><code class="language-typescript">const link = await bot.api.createInvoiceLink({
+  title: "Premium access",
+  description: "Unlock premium features",
+  payload: "premium_sub",
+  currency: "XTR",
+  prices: [{ label: "Monthly", amount: 100 }],
+  subscription_period: 2592000, // 30 days, required for XTR subscriptions
+});</code></pre></div>
+      </div>
+
+      <div class="version-card">
+        <div class="version-header"><span class="version-tag">8.2</span><span class="version-title">Verifying an account</span></div>
+        <div class="code-wrap" style="margin-top:12px;"><pre class="language-typescript"><code class="language-typescript">await bot.api.verifyUser({ user_id: ctx.from!.id, custom_description: "Verified via ayotbl demo" });</code></pre></div>
+      </div>
+    </section>
+
+    <section class="section-block" id="v9">
+      <h2>9.0 – 9.6</h2>
+      <p>Business accounts, Checklists, Suggested Posts, Managed Bots, and a reworked poll model.</p>
+
+      <div class="version-card">
+        <div class="version-header"><span class="version-tag">9.0</span><span class="version-title">Responding to a business message</span></div>
+        <p class="version-desc">Every business message carries <code>business_connection_id</code> — required to call any Business Account method in response.</p>
+        <div class="code-wrap" style="margin-top:12px;"><pre class="language-typescript"><code class="language-typescript">bot.on("business_message", async (ctx) => {
+  const connectionId = ctx.message?.business_connection_id;
+  if (!connectionId) return;
+
+  await bot.api.setBusinessAccountBio({
+    business_connection_id: connectionId,
+    bio: "Managed by ayotbl",
+  });
+});</code></pre></div>
+      </div>
+
+      <div class="version-card">
+        <div class="version-header"><span class="version-tag">9.1</span><span class="version-title">Checklists</span></div>
+        <div class="code-wrap" style="margin-top:12px;"><pre class="language-typescript"><code class="language-typescript">await bot.api.sendChecklist({
+  business_connection_id: connectionId,
+  chat_id: ctx.chatId!,
+  checklist: {
+    title: "Launch checklist",
+    tasks: [
+      { id: 1, text: "Write tests" },
+      { id: 2, text: "Update docs" },
+      { id: 3, text: "Publish" },
+    ],
+  },
+});</code></pre></div>
+      </div>
+
+      <div class="version-card">
+        <div class="version-header"><span class="version-tag">9.2</span><span class="version-title">Suggested Posts (Direct Messages in channels)</span></div>
+        <div class="code-wrap" style="margin-top:12px;"><pre class="language-typescript"><code class="language-typescript">await ctx.reply("Proposed post text", {
+  suggested_post_parameters: {
+    price: { currency: "XTR", amount: 50 },
+  },
+});
+
+bot.on("message", async (ctx) => {
+  if (ctx.message?.suggested_post_info?.state === "pending") {
+    await bot.api.approveSuggestedPost({ chat_id: ctx.chatId!, message_id: ctx.message.message_id });
+  }
+});</code></pre></div>
+      </div>
+
+      <div class="version-card">
+        <div class="version-header"><span class="version-tag">9.6</span><span class="version-title">Multi-answer quiz polls</span></div>
+        <p class="version-desc"><code>correct_option_id</code> (singular) was replaced by <code>correct_option_ids</code> — a quiz can now have more than one correct answer.</p>
+        <div class="code-wrap" style="margin-top:12px;"><pre class="language-typescript"><code class="language-typescript">await bot.api.sendQuiz({
+  chat_id: ctx.chatId!,
+  question: "Pick every even number",
+  options: ["1", "2", "3", "4"],
+  correct_option_ids: [1, 3],
+});</code></pre></div>
+      </div>
+    </section>
+
+    <section class="section-block" id="v10">
+      <h2>10.0 – 10.2</h2>
+      <p>Guest mode, Rich Messages, Ephemeral Messages, and Communities — the newest additions, verified directly against the official changelog the same week they shipped.</p>
+
+      <div class="version-card">
+        <div class="version-header"><span class="version-tag">10.0</span><span class="version-title">Reacting and un-reacting programmatically</span></div>
+        <div class="code-wrap" style="margin-top:12px;"><pre class="language-typescript"><code class="language-typescript">await bot.api.deleteMessageReaction({ chat_id: ctx.chatId!, message_id, user_id: ctx.from!.id });
+await bot.api.deleteAllMessageReactions({ chat_id: ctx.chatId!, message_id });</code></pre></div>
+      </div>
+
+      <div class="version-card">
+        <div class="version-header"><span class="version-tag">10.1</span><span class="version-title">Rich Messages</span></div>
+        <p class="version-desc">See the <a href="#rich-messages">Rich Messages guide</a> above for the full builder API.</p>
+        <div class="code-wrap" style="margin-top:12px;"><pre class="language-typescript"><code class="language-typescript">await ctx.replyRich(RichMessage.markdown().heading("Status").text("All systems normal.").build());</code></pre></div>
+      </div>
+
+      <div class="version-card">
+        <div class="version-header"><span class="version-tag">10.2</span><span class="version-title">Ephemeral Messages</span></div>
+        <p class="version-desc">A reply visible only to the user who triggered it — useful for admin panels or private confirmations in a group.</p>
+        <div class="code-wrap" style="margin-top:12px;"><pre class="language-typescript"><code class="language-typescript">await bot.api.sendMessage({
+  chat_id: ctx.chatId!,
+  text: "Only you can see this ↴",
+  receiver_user_id: ctx.from!.id,
+});
+
+// Later, edit just that ephemeral reply:
+await bot.api.editEphemeralMessageText({
+  receiver_user_id: ctx.from!.id,
+  chat_id: ctx.chatId!,
+  ephemeral_message_id: 1,
+  text: "Updated, still only visible to you.",
+});</code></pre></div>
+      </div>
+
+      <div class="version-card">
+        <div class="version-header"><span class="version-tag">10.2</span><span class="version-title">Communities</span></div>
+        <div class="code-wrap" style="margin-top:12px;"><pre class="language-typescript"><code class="language-typescript">bot.on("message", (ctx) => {
+  if (ctx.message?.community_chat_added) {
+    return ctx.reply(`Added to community: ${ctx.message.community_chat_added.community.title}`);
+  }
+});</code></pre></div>
+      </div>
+    </section>
+
+    <!-- ============ COMPARISON ============ -->
+    <section class="section-block" id="comparison">
+      <h2><span class="h2-eyebrow">Reference</span>vs. telegraf / aiogram</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th></th><th>ayotbl</th><th>telegraf</th><th>aiogram</th></tr></thead>
+          <tbody>
+            <tr><td>Zero runtime deps</td><td class="yes">Yes</td><td class="no">No</td><td class="no">No</td></tr>
+            <tr><td>Native TypeScript</td><td class="yes">Yes</td><td>Partial</td><td class="yes">Yes</td></tr>
+            <tr><td>Plain JS compatible</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="no">No (Python)</td></tr>
+            <tr><td>Decorator support</td><td class="yes">Yes</td><td class="no">No</td><td class="yes">Yes</td></tr>
+            <tr><td>Escape hatch for brand-new methods</td><td class="yes">Yes — <code>api.call()</code></td><td>Partial — <code>telegram.callApi()</code></td><td>Partial</td></tr>
+            <tr><td>Rich Messages (Bot API 10.2)</td><td class="yes">Yes</td><td class="no">No</td><td>Partial</td></tr>
+            <tr><td>Production track record</td><td class="no">No — brand new</td><td class="yes">Years, many real bots</td><td class="yes">Years, many real bots</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>That last row matters more than the others — see <a href="#status">Status</a> for what that means in practice.</p>
+    </section>
+
+    <!-- ============ COVERAGE ============ -->
+    <section class="section-block" id="coverage">
+      <h2>Coverage confidence</h2>
+      <p>Honest, area by area, so you know where to double-check before relying on something.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Area</th><th>Confidence</th><th>How it was verified</th></tr></thead>
+          <tbody>
+            <tr><td>Core messaging, chat admin, forum topics, stickers, games, payments</td><td class="confidence-high">High</td><td>Diffed against telegraf's published method list</td></tr>
+            <tr><td>Inline mode, Telegram Passport</td><td class="confidence-high">High</td><td>Field-by-field against generated SDK docs</td></tr>
+            <tr><td><code>ReplyParameters</code>, polls, reactions, chat boosts</td><td class="confidence-high">High</td><td>Cross-checked against the official changelog</td></tr>
+            <tr><td>Rich Messages (21 blocks + 25 text variants)</td><td class="confidence-high">High</td><td>Field-by-field against a community reference + changelog</td></tr>
+            <tr><td>Ephemeral Messages, Communities (10.2)</td><td class="confidence-high">High</td><td>Verified the same day it shipped</td></tr>
+            <tr><td>Gifts, Stars transactions, Business accounts</td><td class="confidence-high">High</td><td>Field-by-field against generated SDK docs</td></tr>
+            <tr><td>Checklists, Guest mode, Suggested Posts</td><td class="confidence-med">Medium</td><td>Top-level shapes confirmed; some nested fields inferred</td></tr>
+            <tr><td>Business Stories (<code>StoryArea</code>)</td><td class="confidence-med">Medium-low</td><td>Structure confirmed via changelog mentions only</td></tr>
+            <tr><td><code>UniqueGiftColors</code>, <code>GiftBackground</code>, <code>UserRating</code></td><td class="confidence-low">Low, explicitly</td><td>Confirmed to exist; fields inferred from a sibling type's pattern — flagged in source</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============ STATUS ============ -->
+    <section class="section-block" id="status">
+      <h2>Status &amp; testing</h2>
+
+      <div class="callout">
+        <p><strong>Verified:</strong> full build pipeline (tsc → 68 tests → JS smoke test → real-decorator smoke test). Core method coverage diffed against telegraf's actual method list. Live-tested against real Telegram servers for the core happy path — commands, inline keyboards, callback queries, text matching, photo receipt.</p>
+      </div>
+
+      <div class="callout warn">
+        <p><strong>Not yet verified:</strong> webhook mode, Scenes in a live multi-turn conversation, file uploads, and the newer feature areas (Rich Messages, Ephemeral Messages, Gifts, Stars) — all unit-tested against mocked <code>fetch</code>, never a real server.</p>
+        <p>No production mileage yet. That only comes from real usage over time — it's not something more code can fix ahead of time.</p>
+      </div>
+
+      <p>Run the suite yourself:</p>
+      <div class="code-wrap" style="margin-top:0;"><pre class="language-bash"><code class="language-bash">npm test</code></pre></div>
+    </section>
+
+    <footer class="site-footer">
+      <p>ayotbl is MIT licensed. <a href="https://www.npmjs.com/package/ayotbl">npm</a> · <a href="#top">GitHub</a> · <a href="#top">Changelog</a></p>
+      <p>Documentation content was checked against the actual built library at time of writing — every code sample here uses real method and field names, not invented ones.</p>
+    </footer>
+
+  </div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+<script>
+  // ---------- Mobile nav ----------
+  const sidebar = document.getElementById('sidebar');
+  const menuBtn = document.getElementById('menuBtn');
+  const backdrop = document.getElementById('backdrop');
+  function closeNav() { sidebar.classList.remove('open'); backdrop.classList.remove('show'); menuBtn.setAttribute('aria-expanded', 'false'); }
+  function openNav() { sidebar.classList.add('open'); backdrop.classList.add('show'); menuBtn.setAttribute('aria-expanded', 'true'); }
+  menuBtn?.addEventListener('click', () => sidebar.classList.contains('open') ? closeNav() : openNav());
+  backdrop?.addEventListener('click', closeNav);
+  sidebar.querySelectorAll('a').forEach(a => a.addEventListener('click', closeNav));
+
+  // ---------- Scroll-spy ----------
+  const navLinks = Array.from(document.querySelectorAll('.nav-group a'));
+  const sections = navLinks.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const id = '#' + entry.target.id;
+      const link = navLinks.find(a => a.getAttribute('href') === id);
+      if (!link) return;
+      if (entry.isIntersecting) {
+        navLinks.forEach(a => a.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
+  sections.forEach(s => io.observe(s));
+
+  // ---------- Copy buttons ----------
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const text = btn.getAttribute('data-copy');
+      navigator.clipboard?.writeText(text).then(() => {
+        const original = btn.textContent;
+        btn.textContent = 'copied';
+        setTimeout(() => { btn.textContent = original; }, 1400);
+      });
+    });
+  });
+
+  // Add copy buttons to every code block
+  document.querySelectorAll('.code-wrap pre').forEach(pre => {
+    const btn = document.createElement('button');
+    btn.className = 'code-copy';
+    btn.textContent = 'copy';
+    btn.style.position = 'absolute';
+    btn.style.top = '8px';
+    btn.style.right = '10px';
+    btn.addEventListener('click', () => {
+      const code = pre.innerText;
+      navigator.clipboard?.writeText(code).then(() => {
+        btn.textContent = 'copied';
+        setTimeout(() => { btn.textContent = 'copy'; }, 1400);
+      });
+    });
+    pre.style.position = 'relative';
+    pre.appendChild(btn);
+  });
+
+  // ---------- Hero chat demo animation ----------
+  const demo = document.getElementById('demoBubbles');
+  const script = [
+    { type: 'user', text: '/start' },
+    { type: 'typing' },
+    { type: 'bot', text: 'Hey Alex!' },
+    { type: 'kb' },
+  ];
+  function playDemo() {
+    demo.innerHTML = '';
+    let delay = 300;
+    script.forEach((step) => {
+      setTimeout(() => {
+        if (step.type === 'typing') {
+          const t = document.createElement('div');
+          t.className = 'bubble bot demo-typing';
+          t.innerHTML = '<span></span><span></span><span></span>';
+          t.id = 'typingIndicator';
+          demo.appendChild(t);
+        } else if (step.type === 'kb') {
+          document.getElementById('typingIndicator')?.remove();
+          const kb = document.createElement('div');
+          kb.className = 'demo-kb';
+          kb.innerHTML = '<span class="demo-kb-btn success">Confirm</span><span class="demo-kb-btn danger">Cancel</span>';
+          demo.appendChild(kb);
+        } else {
+          document.getElementById('typingIndicator')?.remove();
+          const b = document.createElement('div');
+          b.className = 'bubble ' + step.type;
+          b.textContent = step.text;
+          demo.appendChild(b);
+        }
+      }, delay);
+      delay += step.type === 'typing' ? 700 : 550;
+    });
+  }
+  playDemo();
+  setInterval(playDemo, 6500);
+</script>
+
+</body>
+</html>

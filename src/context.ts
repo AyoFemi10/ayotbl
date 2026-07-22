@@ -48,9 +48,30 @@ export class Context {
   }
   get callbackQuery(): T.CallbackQuery | undefined { return this.update.callback_query; }
   get inlineQuery(): T.InlineQuery | undefined { return this.update.inline_query; }
-  get chat(): T.Chat | undefined { return this.message?.chat ?? this.callbackQuery?.message?.chat; }
+  get chat(): T.Chat | undefined {
+    return (
+      this.message?.chat ??
+      this.callbackQuery?.message?.chat ??
+      this.update.my_chat_member?.chat ??
+      this.update.chat_member?.chat ??
+      this.update.chat_join_request?.chat ??
+      this.update.chat_boost?.chat ??
+      this.update.removed_chat_boost?.chat ??
+      this.update.poll_answer?.voter_chat
+    );
+  }
   get from(): T.User | undefined {
-    return this.message?.from ?? this.callbackQuery?.from ?? this.inlineQuery?.from ?? this.update.chat_join_request?.from;
+    return (
+      this.message?.from ??
+      this.callbackQuery?.from ??
+      this.inlineQuery?.from ??
+      this.update.chat_join_request?.from ??
+      this.update.my_chat_member?.from ??
+      this.update.chat_member?.from ??
+      this.update.shipping_query?.from ??
+      this.update.pre_checkout_query?.from ??
+      this.update.poll_answer?.user
+    );
   }
   get text(): string | undefined { return this.message?.text; }
   get chatId(): T.ChatId | undefined { return this.chat?.id; }
@@ -83,7 +104,9 @@ export class Context {
   replyWithAudio(audio: T.InputFile, extra: Omit<Parameters<Api["sendAudio"]>[0], "chat_id" | "audio"> = {}) {
     return this.api.sendAudio({ ...this.baseSend(), audio, ...extra });
   }
-  replyWithSticker(sticker: T.InputFile) { return this.api.call<T.Message>("sendSticker", { ...this.baseSend(), sticker }); }
+  replyWithSticker(sticker: T.InputFile, extra: Omit<Parameters<Api["sendSticker"]>[0], "chat_id" | "sticker"> = {}) {
+    return this.api.sendSticker({ ...this.baseSend(), sticker, ...extra });
+  }
   replyWithPoll(question: string, options: string[], extra: Omit<Parameters<Api["sendPoll"]>[0], "chat_id" | "question" | "options"> = {}) {
     return this.api.sendPoll({ ...this.baseSend(), question, options, ...extra });
   }
@@ -91,12 +114,38 @@ export class Context {
     return this.api.sendChatAction({ ...this.baseSend(), action });
   }
 
-  /** Edit the message this context came from (if it's editable — e.g. inside an action() handler). */
+  /**
+   * The message_id to edit/delete when no explicit one is given — resolves
+   * from the current message OR, critically, from callback_query.message
+   * (the "user taps a button, bot edits that message" pattern). Previously
+   * editText()/deleteMessage() only checked ctx.message, which is always
+   * undefined for callback_query updates, silently breaking the single most
+   * common edit-on-button-tap pattern.
+   */
+  private get editableMessageId(): T.Integer | undefined {
+    return this.message?.message_id ?? this.callbackQuery?.message?.message_id;
+  }
+
+  /** Edit the message this context came from — works from a plain message context and from inside action()/callback_query handlers. */
   editText(text: string, extra: Record<string, unknown> = {}) {
-    return this.api.editMessageText({ chat_id: this.chatId, message_id: this.message?.message_id, text, ...extra });
+    return this.api.editMessageText({ chat_id: this.chatId, message_id: this.editableMessageId, text, ...extra });
+  }
+  editCaption(caption: string, extra: Record<string, unknown> = {}) {
+    return this.api.editMessageCaption({ chat_id: this.chatId, message_id: this.editableMessageId, caption, ...extra });
+  }
+  editMedia(media: T.InputMedia, extra: Record<string, unknown> = {}) {
+    return this.api.editMessageMedia({ chat_id: this.chatId, message_id: this.editableMessageId, media, ...extra });
+  }
+  /** Update just the inline keyboard — e.g. toggling a selection without resending the message. */
+  editReplyMarkup(reply_markup?: T.InlineKeyboardMarkup) {
+    return this.api.editMessageReplyMarkup({ chat_id: this.chatId, message_id: this.editableMessageId, reply_markup });
   }
   deleteMessage(messageId?: T.Integer) {
-    return this.api.deleteMessage({ chat_id: this.chatId!, message_id: messageId ?? this.message!.message_id });
+    const id = messageId ?? this.editableMessageId;
+    if (this.chatId === undefined || id === undefined) {
+      throw new Error("ctx has no message to delete for this update type — pass a message_id explicitly");
+    }
+    return this.api.deleteMessage({ chat_id: this.chatId, message_id: id });
   }
 
   // ----- Callback query -----

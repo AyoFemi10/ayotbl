@@ -286,6 +286,8 @@ export interface Message {
   from?: User;
   sender_chat?: Chat;
   date: Integer;
+  /** Present on business messages — identifies which business connection this message came through, required for calling business account methods in response. */
+  business_connection_id?: string;
   chat: Chat;
   reply_to_message?: Message;
   external_reply?: ExternalReplyInfo;
@@ -1066,7 +1068,7 @@ export interface ChosenInlineResult {
 export interface CallbackQuery {
   id: string;
   from: User;
-  message?: Message;
+  message?: MaybeInaccessibleMessage;
   inline_message_id?: string;
   chat_instance: string;
   data?: string;
