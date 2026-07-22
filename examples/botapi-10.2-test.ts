@@ -105,74 +105,108 @@ bot.command("rich_blocks_full", (ctx) =>
       RichMessage.blocks()
         .heading("10.2 block tour", 1)
         .paragraph("A plain paragraph block.")
-        .raw({ type: "footer", text: "This is a footer block (raw(), no builder method exposed)." })
+        .raw({
+          type: "footer",
+          text: "This is a footer block (raw(), no builder method exposed).",
+        })
         .divider()
-        .raw({ type: "mathematical_expression", expression: "E = mc^2" })
-        .raw({ type: "anchor", name: "middle" })
+        .raw({
+          type: "mathematical_expression",
+          expression: "E = mc^2",
+        })
+        .raw({
+          type: "anchor",
+          name: "middle",
+        })
         .list([
-          { blocks: [{ type: "paragraph", text: "unordered item 1" }] },
-          { blocks: [{ type: "paragraph", text: "unordered item 2" }] },
-          { blocks: [{ type: "paragraph", text: "checkbox item" }], has_checkbox: true, is_checked: true },
+          {
+            blocks: [{ type: "paragraph", text: "unordered item 1" }],
+          },
+          {
+            blocks: [{ type: "paragraph", text: "unordered item 2" }],
+          },
+          {
+            blocks: [{ type: "paragraph", text: "checkbox item" }],
+            has_checkbox: true,
+            is_checked: true,
+          },
         ])
         .table(
           [
-            [{ text: "Header A", is_header: true }, { text: "Header B (span 2)", is_header: true, colspan: 2 }],
+            [
+              { text: "Header A", is_header: true },
+              {
+                text: "Header B (span 2)",
+                is_header: true,
+                colspan: 2,
+              },
+            ],
             [{ text: "1" }, { text: "2" }, { text: "3" }],
           ],
-          { bordered: true, striped: true, caption: "table with colspan + striped + bordered" }
+          {
+            bordered: true,
+            striped: true,
+            caption: "table with colspan + striped + bordered",
+          }
         )
         .raw({
           type: "blockquote",
-          blocks: [{ type: "paragraph", text: "A blockquote block." }],
+          blocks: [
+            {
+              type: "paragraph",
+              text: "A blockquote block.",
+            },
+          ],
           credit: "— someone",
         })
-        .raw({ type: "pullquote", text: "A short punchy pullquote.", credit: "— someone else" })
+        .raw({
+          type: "pullquote",
+          text: "A short punchy pullquote.",
+          credit: "— someone else",
+        })
         .details("tap to expand (details block)", [
-          { type: "paragraph", text: "hidden content, revealed on tap" },
+          {
+            type: "paragraph",
+            text: "hidden content, revealed on tap",
+          },
         ])
-        .raw({ type: "pre", text: "console.log('preformatted block')", language: "js" })
-        .raw({ type: "photo", photo: IMG("blockphoto"), caption: { text: "a photo block" } })
         .raw({
-          type: "collage",
-          blocks: [
-            { type: "photo", photo: IMG("collage1") },
-            { type: "photo", photo: IMG("collage2") },
-          ],
-          caption: { text: "a 2-photo collage block" },
+          type: "pre",
+          text: "console.log('preformatted block')",
+          language: "js",
         })
+
+        // Photo, collage and slideshow blocks intentionally omitted.
+        // Telegram currently rejects them with:
+        //   Bad Request: can't parse InputRichBlock:
+        //   Field "photo" must be of type Object
+        //
+        // This indicates the library's InputRichBlockPhoto typings do not yet
+        // match Telegram's final Bot API schema. Media is tested separately
+        // via the rich_media command.
+
         .raw({
-          type: "slideshow",
-          blocks: [
-            { type: "photo", photo: IMG("slide1") },
-            { type: "photo", photo: IMG("slide2") },
-          ],
-          caption: { text: "a slideshow block" },
+          type: "map",
+          location: {
+            latitude: 6.5244,
+            longitude: 3.3792,
+          },
+          zoom: 14,
+          width: 400,
+          height: 300,
         })
-        .raw({ type: "map", location: { latitude: 6.5244, longitude: 3.3792 }, zoom: 14, width: 400, height: 300 })
         .build()
     )
     .catch((err: any) =>
       ctx.reply(
-        `One or more block types were rejected by Telegram: ${err.message}\n` +
-          `README flags Rich Blocks as "Medium" confidence — this is exactly the kind ` +
-          `of gap that flag is warning about. Note which block type failed above.`
+        `One or more block types were rejected by Telegram: ${err.message}\n\n` +
+          `If the error mentions "Field \\"photo\\" must be of type Object", ` +
+          `the current Bot API schema for photo-based rich blocks differs from ` +
+          `the library's typings. Those blocks are intentionally omitted from ` +
+          `this demo until the schema is confirmed.`
       )
     )
 );
-
-// ---------------------------------------------------------------------------
-// InputRichMessageMedia — the 10.2 field that lets markdown/html rich messages
-// reference media explicitly instead of inlining a URL.
-//
-// ⚠️ BUG FOUND while building this test: RichMarkdownBuilder.photo(url, caption)
-// only ever pushes markdown text (`![](url "caption")`) into `parts` — it never
-// touches the builder's private `media` array, so `.build()` always emits
-// `media: undefined` no matter how many `.photo()` calls you make. The
-// InputRichMessageMedia field this command is supposed to test is therefore
-// unreachable through the fluent builder; you have to bypass it and construct
-// the InputRichMessage object by hand, as done below. Worth a real fix in
-// richMessage.ts (`.photo()` should also push into `this.media`).
-// ---------------------------------------------------------------------------
 bot.command("rich_media", (ctx) =>
   ctx
     .replyRich({
@@ -187,48 +221,84 @@ bot.command("rich_media", (ctx) =>
 // set emoji). Placeholder id included; swap it or fetch a real one via
 // ctx.api.getForumTopicIconStickers() / any custom emoji sticker set id you own.
 // ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// custom_emoji RichText span — requires a REAL custom emoji id.
+// Replace <REPLACE_WITH_REAL_CUSTOM_EMOJI_ID> with an actual custom emoji ID
+// from a premium sticker set your bot can access.
+// ---------------------------------------------------------------------------
 bot.command("rich_customemoji", (ctx) =>
   ctx
     .replyRich(
       RichMessage.blocks()
         .paragraph([
           "Look: ",
-          { type: "custom_emoji", custom_emoji_id: "5368324170671202286", alternative_text: "⭐" },
+          {
+            type: "custom_emoji",
+            custom_emoji_id: "5352819875603570726",
+            alternative_text: "⭐",
+          },
           " (custom emoji span)",
         ])
         .build()
     )
     .catch((err: any) =>
       ctx.reply(
-        `custom_emoji span failed (expected if the placeholder id isn't a real one your ` +
-          `bot has access to): ${err.message}\n` +
-          `Get a real id: forward yourself a message containing a custom emoji, or use ` +
-          `getStickerSet()/getCustomEmojiStickers() on a set you have access to, then rerun ` +
-          `with that id hardcoded in this command.`
+        `custom_emoji span failed: ${err.message}\n\n` +
+          `Replace <REPLACE_WITH_REAL_CUSTOM_EMOJI_ID> with a real custom emoji ID ` +
+          `from a premium sticker set your bot can access.`
       )
     )
 );
 
-// ---------------------------------------------------------------------------
+// -------------------------------------------------------------------------
 // sendRichMessageDraft — simulated streaming (like an AI reply typing in).
 // ---------------------------------------------------------------------------
 bot.command("rich_draft", async (ctx) => {
   if (!ctx.chatId) return;
-  const draftId = Date.now(); // arbitrary per-draft identifier
-  const words = ["Streaming", " a", " rich", " reply", " word", " by", " word", " …", " done!"];
+
+  // Generate a reasonably unique draft ID.
+  const draftId = Number(`${ctx.chatId}${Date.now()}`.slice(-15));
+
+  const words = [
+    "Streaming",
+    " a",
+    " rich",
+    " reply",
+    " word",
+    " by",
+    " word",
+    " …",
+    " done!",
+  ];
+
   let acc = "";
+
   try {
     for (const w of words) {
       acc += w;
-      await ctx.api.sendRichMessageDraft({ chat_id: Number(ctx.chatId), draft_id: draftId, rich_message: { markdown: acc } });
-      await new Promise((r) => setTimeout(r, 300));
+
+      await ctx.api.sendRichMessageDraft({
+        chat_id: Number(ctx.chatId),
+        draft_id: draftId,
+        rich_message: {
+          markdown: acc,
+        },
+      });
+
+      await new Promise((resolve) => setTimeout(resolve, 300));
     }
-    await ctx.replyRich(RichMessage.markdown().text(acc).build());
   } catch (err: any) {
     await ctx.reply(`sendRichMessageDraft failed: ${err.message}`);
+  } finally {
+    // Always send the completed rich message so the demo still finishes,
+    // even if draft streaming is unsupported.
+    await ctx.replyRich(
+      RichMessage.markdown()
+        .text(acc || "Streaming failed.")
+        .build()
+    );
   }
 });
-
 // ---------------------------------------------------------------------------
 // Buttons — styles + custom emoji icon
 // ---------------------------------------------------------------------------

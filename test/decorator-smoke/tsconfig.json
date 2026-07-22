@@ -4,9 +4,11 @@
     "module": "CommonJS",
     "moduleResolution": "node",
     "lib": ["ES2022"],
-    "outDir": ".",
+    "rootDir": ".",
+    "outDir": "../../.tmp/decorator-smoke",
     "experimentalDecorators": true,
     "skipLibCheck": true,
     "esModuleInterop": true
-  }
+  },
+  "files": ["source.ts"]
 }

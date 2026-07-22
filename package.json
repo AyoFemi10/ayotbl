@@ -10,11 +10,21 @@
     "build": "tsc -p tsconfig.json",
     "dev": "tsx examples/basic.ts",
     "test": "npm run build && tsx --test test/*.test.ts && node test/smoke.plain-js.test.js && npm run test:decorators-real",
-    "test:decorators-real": "tsc -p test/decorator-smoke/tsconfig.json && node test/decorator-smoke/dist/source.js",
+    "test:decorators-real": "tsc -p test/decorator-smoke/tsconfig.json && node .tmp/decorator-smoke/source.js",
     "prepublishOnly": "npm test"
   },
   "keywords": ["telegram", "bot", "telegram-bot", "bot-api", "ayotbl", "typescript"],
-  "author": "Ayomikun Dev",
+
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AyoFemi10/ayotbl.git"
+  },
+  "bugs": {
+    "url": "https://github.com/AyoFemi10/ayotbl/issues"
+  },
+  "homepage": "https://github.com/AyoFemi10/ayotbl#readme",
+
+  "author": "",
   "license": "MIT",
   "engines": { "node": ">=18" },
   "dependencies": {},
