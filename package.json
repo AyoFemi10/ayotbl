@@ -1,11 +1,15 @@
 {
   "name": "ayotbl",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A friendlier, fully-typed Telegram Bot API library for Node.js/TypeScript — every method, three ways to write handlers, one bot.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "commonjs",
-  "files": ["dist/**/*", "README.md", "LICENSE"],
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "tsx examples/basic.ts",
@@ -13,8 +17,14 @@
     "test:decorators-real": "tsc -p test/decorator-smoke/tsconfig.json && node .tmp/decorator-smoke/source.js",
     "prepublishOnly": "npm test"
   },
-  "keywords": ["telegram", "bot", "telegram-bot", "bot-api", "ayotbl", "typescript"],
-
+  "keywords": [
+    "telegram",
+    "bot",
+    "telegram-bot",
+    "bot-api",
+    "ayotbl",
+    "typescript"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/AyoFemi10/ayotbl.git"
@@ -23,10 +33,11 @@
     "url": "https://github.com/AyoFemi10/ayotbl/issues"
   },
   "homepage": "https://github.com/AyoFemi10/ayotbl#readme",
-
   "author": "",
   "license": "MIT",
-  "engines": { "node": ">=18" },
+  "engines": {
+    "node": ">=18"
+  },
   "dependencies": {},
   "devDependencies": {
     "typescript": "^5.5.4",
