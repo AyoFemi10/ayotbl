@@ -1,0 +1,1854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ayotbl — API reference</title>
+<meta name="description" content="Auto-generated API reference for every method in ayotbl's Api class, extracted directly from source.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0B0E14; --surface: #12161F; --surface-2: #171C27; --border: #212734; --border-soft: #1A2029;
+    --text: #E7E9EE; --text-muted: #8B92A3; --text-faint: #545C6C;
+    --primary: #5B8DEF; --primary-soft: rgba(91,141,239,0.12);
+    --success: #34D399; --success-soft: rgba(52,211,153,0.12);
+    --font-display: 'Space Grotesk', sans-serif; --font-body: 'IBM Plex Sans', sans-serif; --font-mono: 'IBM Plex Mono', monospace;
+    --sidebar-w: 280px;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 15px; line-height: 1.6; }
+  a { color: inherit; text-decoration: none; }
+  .sidebar {
+    position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w);
+    background: var(--surface); border-right: 1px solid var(--border); overflow-y: auto; padding: 26px 18px 60px;
+  }
+  .sidebar-brand { display: flex; align-items: center; gap: 8px; font-family: var(--font-display); font-weight: 700; font-size: 1.2rem; margin-bottom: 4px; }
+  .sidebar-sub { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-faint); margin: 0 0 6px; }
+  .back-link { display: inline-block; margin-bottom: 20px; font-size: 0.8rem; color: var(--primary); }
+  .sidebar nav a {
+    display: flex; justify-content: space-between; gap: 6px; color: var(--text-muted); font-size: 0.83rem;
+    padding: 6px 10px; border-radius: 7px; margin-bottom: 1px;
+  }
+  .sidebar nav a:hover { background: var(--surface-2); color: var(--text); }
+  .sidebar nav a .count { font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-faint); background: var(--bg); padding: 1px 6px; border-radius: 20px; }
+  .main { margin-left: var(--sidebar-w); max-width: 820px; padding: 40px 44px 120px; }
+  .main-header { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 1px solid var(--border-soft); }
+  h1 { font-family: var(--font-display); font-weight: 700; font-size: 2rem; margin: 0 0 8px; }
+  .stat { color: var(--text-muted); font-size: 0.95rem; }
+  .stat strong { color: var(--success); }
+  h2 { font-family: var(--font-display); font-weight: 600; font-size: 1.3rem; margin: 46px 0 18px; padding-top: 8px; scroll-margin-top: 20px; color: var(--primary); }
+  .ref-method { border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; margin-bottom: 12px; background: var(--surface); scroll-margin-top: 20px; }
+  .ref-method-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .ref-method-name { font-family: var(--font-mono); font-weight: 500; color: var(--text); font-size: 0.95rem; }
+  .ref-api-name { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-faint); }
+  .ref-doc { color: var(--text-muted); font-size: 0.86rem; margin: 8px 0; }
+  .ref-sig { background: #0D1017; border: 1px solid var(--border-soft); border-radius: 7px; padding: 12px 14px; margin: 10px 0 0; overflow-x: auto; }
+  .ref-sig code { font-family: var(--font-mono); font-size: 0.78rem; color: #B8C4D9; white-space: pre-wrap; word-break: break-word; }
+  @media (max-width: 900px) { .sidebar { display: none; } .main { margin-left: 0; padding: 30px 20px 100px; } }
+</style>
+</head>
+<body>
+<nav class="sidebar">
+  <div class="sidebar-brand"><span style="color:var(--primary)">●</span> ayotbl</div>
+  <p class="sidebar-sub">API reference</p>
+  <a href="index.html" class="back-link">&larr; Back to guide</a>
+  <nav>
+    <a href="#core-escape-hatch-file-urls">Core (escape hatch &amp; file URLs) <span class="count">3</span></a>
+    <a href="#getting-updates">Getting updates <span class="count">7</span></a>
+    <a href="#sending-messages">Sending messages <span class="count">28</span></a>
+    <a href="#editing-deleting">Editing / deleting <span class="count">7</span></a>
+    <a href="#ephemeral-messages-bot-api-10-2">Ephemeral Messages (Bot API 10.2) <span class="count">5</span></a>
+    <a href="#files">Files <span class="count">3</span></a>
+    <a href="#chat-administration">Chat administration <span class="count">35</span></a>
+    <a href="#forum-topics">Forum topics <span class="count">13</span></a>
+    <a href="#bot-profile-commands-menu">Bot profile / commands / menu <span class="count">17</span></a>
+    <a href="#callback-inline-queries">Callback / inline queries <span class="count">6</span></a>
+    <a href="#payments">Payments <span class="count">4</span></a>
+    <a href="#stickers">Stickers <span class="count">14</span></a>
+    <a href="#games">Games <span class="count">3</span></a>
+    <a href="#checklists-bot-api-9-1-sent-edited-on-behalf-of-a-business-account-only">Checklists (Bot API 9.1) — sent/edited on behalf of a business account only <span class="count">2</span></a>
+    <a href="#business-accounts">Business accounts <span class="count">21</span></a>
+    <a href="#verification-bot-api-8-2">Verification (Bot API 8.2+) <span class="count">4</span></a>
+    <a href="#gifts-bot-api-8-0">Gifts (Bot API 8.0+) <span class="count">3</span></a>
+    <a href="#stars-payments-transactions-bot-api-7-4">Stars &amp; Payments transactions (Bot API 7.4+) <span class="count">4</span></a>
+    <a href="#suggested-posts-direct-messages-in-channels-bot-api-9-2">Suggested Posts / Direct Messages in Channels (Bot API 9.2+) <span class="count">2</span></a>
+    <a href="#guest-mode-bot-api-10-0-bots-being-mentioned-queried-by-users-they-have-no-direct-relationship-with">Guest mode (Bot API 10.0+) — bots being mentioned/queried by users they have no direct relationship with <span class="count">1</span></a>
+    <a href="#managed-bots-bot-api-9-5-9-6">Managed Bots (Bot API 9.5/9.6) <span class="count">5</span></a>
+  </nav>
+</nav>
+<main class="main">
+  <header class="main-header">
+    <h1>API Reference</h1>
+    <p class="stat"><strong>187</strong> methods across <strong>21</strong> categories — extracted directly from <code>src/client.ts</code>, not hand-transcribed. Run <code>node scripts/gen-api-reference.mjs</code> to regenerate after adding methods.</p>
+  </header>
+  
+    <section class="ref-category" id="core-escape-hatch-file-urls">
+      <h2>Core (escape hatch &amp; file URLs)</h2>
+      
+      <div class="ref-method" id="method-getfiledownloadurl">
+        <div class="ref-method-head">
+          <code class="ref-method-name">getFileDownloadUrl()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>getFileDownloadUrl(filePath: string): string</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-call">
+        <div class="ref-method-head">
+          <code class="ref-method-name">call()</code>
+          
+        </div>
+        <p class="ref-doc">Escape hatch: call ANY method by name, typed or not. Always up to date.</p>
+        <pre class="ref-sig"><code>call&lt;TResult = unknown&gt;(method: string, params: object = {}): Promise&lt;TResult&gt;</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-fileurl">
+        <div class="ref-method-head">
+          <code class="ref-method-name">fileUrl()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>fileUrl(filePath: string): string</code></pre>
+      </div>
+    </section>
+
+    <section class="ref-category" id="getting-updates">
+      <h2>Getting updates</h2>
+      
+      <div class="ref-method" id="method-getme">
+        <div class="ref-method-head">
+          <code class="ref-method-name">getMe()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>getMe()</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-logout">
+        <div class="ref-method-head">
+          <code class="ref-method-name">logOut()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>logOut()</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-close">
+        <div class="ref-method-head">
+          <code class="ref-method-name">close()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>close()</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-getupdates">
+        <div class="ref-method-head">
+          <code class="ref-method-name">getUpdates()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>getUpdates(params: { offset?: T.Integer; limit?: T.Integer; timeout?: T.Integer; allowed_updates?: string[] } = {})</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-setwebhook">
+        <div class="ref-method-head">
+          <code class="ref-method-name">setWebhook()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>setWebhook(params: { url: string; secret_token?: string; max_connections?: T.Integer; allowed_updates?: string[]; drop_pending_updates?: boolean })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-deletewebhook">
+        <div class="ref-method-head">
+          <code class="ref-method-name">deleteWebhook()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>deleteWebhook(params: { drop_pending_updates?: boolean } = {})</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-getwebhookinfo">
+        <div class="ref-method-head">
+          <code class="ref-method-name">getWebhookInfo()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>getWebhookInfo()</code></pre>
+      </div>
+    </section>
+
+    <section class="ref-category" id="sending-messages">
+      <h2>Sending messages</h2>
+      
+      <div class="ref-method" id="method-sendmessage">
+        <div class="ref-method-head">
+          <code class="ref-method-name">sendMessage()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>sendMessage(params: { chat_id: T.ChatId; text: string; parse_mode?: T.ParseMode; entities?: T.MessageEntity[]; link_preview_options?: T.LinkPreviewOptions } &amp; CommonSendOptions)</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-sendmessagedraft">
+        <div class="ref-method-head">
+          <code class="ref-method-name">sendMessageDraft()</code>
+          
+        </div>
+        <p class="ref-doc">Streams a partial plain-text message to a private chat while it's being generated — the plain-text sibling of sendRichMessageDraft. Ephemeral preview (not saved in the chat); call sendMessage with the final text once generation finishes. Modeled on sendRichMessageDraft's confirmed shape (draft_id, private-chat-only) since I could not independently verify sendMessageDraft's exact parameters beyond its existence and purpose in the official changelog.</p>
+        <pre class="ref-sig"><code>sendMessageDraft(params: { chat_id: T.Integer; message_thread_id?: T.Integer; draft_id: T.Integer; text: string; parse_mode?: T.ParseMode; entities?: T.MessageEntity[] })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-sendrichmessage">
+        <div class="ref-method-head">
+          <code class="ref-method-name">sendRichMessage()</code>
+          
+        </div>
+        <p class="ref-doc">New in Bot API 10.1 — structured tables, checklists, blockquotes, inline media, streamed or not.</p>
+        <pre class="ref-sig"><code>sendRichMessage(params: { chat_id: T.ChatId; rich_message: T.InputRichMessage } &amp; CommonSendOptions)</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-sendrichmessagedraft">
+        <div class="ref-method-head">
+          <code class="ref-method-name">sendRichMessageDraft()</code>
+          
+        </div>
+        <p class="ref-doc">Streams a partial rich message to a private chat while it's being generated. The draft is ephemeral (a ~30s preview, not saved in the chat) — call sendRichMessage with the complete content once generation finishes. draft_id must be non-zero; repeated calls with the same draft_id animate between states. Private chats only (chat_id must be the numeric user id).</p>
+        <pre class="ref-sig"><code>sendRichMessageDraft(params: { chat_id: T.Integer; message_thread_id?: T.Integer; draft_id: T.Integer; rich_message: T.InputRichMessage })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-forwardmessage">
+        <div class="ref-method-head">
+          <code class="ref-method-name">forwardMessage()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>forwardMessage(params: { chat_id: T.ChatId; from_chat_id: T.ChatId; message_id: T.Integer; message_thread_id?: T.Integer; disable_notification?: boolean; protect_content?: boolean; message_effect_id?: string; video_start_timestamp?: T.Integer })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-forwardmessages">
+        <div class="ref-method-head">
+          <code class="ref-method-name">forwardMessages()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>forwardMessages(params: { chat_id: T.ChatId; from_chat_id: T.ChatId; message_ids: T.Integer[]; message_thread_id?: T.Integer; disable_notification?: boolean; protect_content?: boolean })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-copymessage">
+        <div class="ref-method-head">
+          <code class="ref-method-name">copyMessage()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>copyMessage(params: { chat_id: T.ChatId; from_chat_id: T.ChatId; message_id: T.Integer; caption?: string; parse_mode?: T.ParseMode; show_caption_above_media?: boolean; video_start_timestamp?: T.Integer } &amp; CommonSendOptions)</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-copymessages">
+        <div class="ref-method-head">
+          <code class="ref-method-name">copyMessages()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>copyMessages(params: { chat_id: T.ChatId; from_chat_id: T.ChatId; message_ids: T.Integer[]; remove_caption?: boolean })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-sendphoto">
+        <div class="ref-method-head">
+          <code class="ref-method-name">sendPhoto()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>sendPhoto(params: { chat_id: T.ChatId; photo: T.InputFile; caption?: string; parse_mode?: T.ParseMode; has_spoiler?: boolean; show_caption_above_media?: boolean } &amp; CommonSendOptions)</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-sendlivephoto">
+        <div class="ref-method-head">
+          <code class="ref-method-name">sendLivePhoto()</code>
+          
+        </div>
+        <p class="ref-doc">Bot API 10.2+: send a short looping "live photo" (discovered via the official changelog's parameter list, not independently field-verified beyond that — the LivePhoto receive type is a best-effort model).</p>
+        <pre class="ref-sig"><code>sendLivePhoto(params: { chat_id: T.ChatId; live_photo: T.InputFile; caption?: string; parse_mode?: T.ParseMode } &amp; CommonSendOptions)</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-sendaudio">
+        <div class="ref-method-head">
+          <code class="ref-method-name">sendAudio()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>sendAudio(params: { chat_id: T.ChatId; audio: T.InputFile; caption?: string; duration?: T.Integer; performer?: string; title?: string } &amp; CommonSendOptions)</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-senddocument">
+        <div class="ref-method-head">
+          <code class="ref-method-name">sendDocument()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>sendDocument(params: { chat_id: T.ChatId; document: T.InputFile; caption?: string; parse_mode?: T.ParseMode } &amp; CommonSendOptions)</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-sendvideo">
+        <div class="ref-method-head">
+          <code class="ref-method-name">sendVideo()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>sendVideo(params: { chat_id: T.ChatId; video: T.InputFile; caption?: string; parse_mode?: T.ParseMode; width?: T.Integer; height?: T.Integer; duration?: T.Integer; has_spoiler?: boolean; show_caption_above_media?: boolean; supports_streaming?: boolean; cover?: T.InputFile; start_timestamp?: T.Integer } &amp; CommonSendOptions)</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-sendanimation">
+        <div class="ref-method-head">
+          <code class="ref-method-name">sendAnimation()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>sendAnimation(params: { chat_id: T.ChatId; animation: T.InputFile; caption?: string; width?: T.Integer; height?: T.Integer; duration?: T.Integer; has_spoiler?: boolean; show_caption_above_media?: boolean } &amp; CommonSendOptions)</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-sendsticker">
+        <div class="ref-method-head">
+          <code class="ref-method-name">sendSticker()</code>
+          
+        </div>
+        <p class="ref-doc">Was missing entirely despite being one of the most common Bot API methods — found while auditing Context.replyWithSticker's fallback to the raw call() escape hatch.</p>
+        <pre class="ref-sig"><code>sendSticker(params: { chat_id: T.ChatId; sticker: T.InputFile; emoji?: string } &amp; CommonSendOptions)</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-sendvoice">
+        <div class="ref-method-head">
+          <code class="ref-method-name">sendVoice()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>sendVoice(params: { chat_id: T.ChatId; voice: T.InputFile; caption?: string; duration?: T.Integer } &amp; CommonSendOptions)</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-sendvideonote">
+        <div class="ref-method-head">
+          <code class="ref-method-name">sendVideoNote()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>sendVideoNote(params: { chat_id: T.ChatId; video_note: T.InputFile; duration?: T.Integer; length?: T.Integer } &amp; CommonSendOptions)</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-sendmediagroup">
+        <div class="ref-method-head">
+          <code class="ref-method-name">sendMediaGroup()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>sendMediaGroup(params: { chat_id: T.ChatId; media: T.InputMedia[] } &amp; Omit&lt;CommonSendOptions, "reply_markup"&gt;)</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-sendpaidmedia">
+        <div class="ref-method-head">
+          <code class="ref-method-name">sendPaidMedia()</code>
+          
+        </div>
+        <p class="ref-doc">Bot API 7.6+: send photos/videos that require the receiver to pay Stars to unlock.</p>
+        <pre class="ref-sig"><code>sendPaidMedia(params: { chat_id: T.ChatId; star_count: T.Integer; media: T.InputPaidMedia[]; caption?: string; parse_mode?: T.ParseMode; payload?: string } &amp; CommonSendOptions)</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-sendlocation">
+        <div class="ref-method-head">
+          <code class="ref-method-name">sendLocation()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>sendLocation(params: { chat_id: T.ChatId; latitude: number; longitude: number; horizontal_accuracy?: number; live_period?: T.Integer; heading?: T.Integer; proximity_alert_radius?: T.Integer } &amp; CommonSendOptions)</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-editmessagelivelocation">
+        <div class="ref-method-head">
+          <code class="ref-method-name">editMessageLiveLocation()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>editMessageLiveLocation(params: { chat_id?: T.ChatId; message_id?: T.Integer; inline_message_id?: string; latitude: number; longitude: number; heading?: T.Integer; proximity_alert_radius?: T.Integer; reply_markup?: T.InlineKeyboardMarkup })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-stopmessagelivelocation">
+        <div class="ref-method-head">
+          <code class="ref-method-name">stopMessageLiveLocation()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>stopMessageLiveLocation(params: { chat_id?: T.ChatId; message_id?: T.Integer; inline_message_id?: string; reply_markup?: T.InlineKeyboardMarkup })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-sendvenue">
+        <div class="ref-method-head">
+          <code class="ref-method-name">sendVenue()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>sendVenue(params: { chat_id: T.ChatId; latitude: number; longitude: number; title: string; address: string; foursquare_id?: string } &amp; CommonSendOptions)</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-sendcontact">
+        <div class="ref-method-head">
+          <code class="ref-method-name">sendContact()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>sendContact(params: { chat_id: T.ChatId; phone_number: string; first_name: string; last_name?: string; vcard?: string } &amp; CommonSendOptions)</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-sendpoll">
+        <div class="ref-method-head">
+          <code class="ref-method-name">sendPoll()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>sendPoll(params: SendPollParams)</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-sendquiz">
+        <div class="ref-method-head">
+          <code class="ref-method-name">sendQuiz()</code>
+          <span class="ref-api-name">→ sendPoll</span>
+        </div>
+        <p class="ref-doc">Convenience: sendPoll with type "quiz" pre-filled, matching telegraf's sendQuiz.</p>
+        <pre class="ref-sig"><code>sendQuiz(params: Omit&lt;SendPollParams, "type"&gt;)</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-senddice">
+        <div class="ref-method-head">
+          <code class="ref-method-name">sendDice()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>sendDice(params: { chat_id: T.ChatId; emoji?: "🎲" | "🎯" | "🏀" | "⚽" | "🎳" | "🎰" } &amp; CommonSendOptions)</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-sendchataction">
+        <div class="ref-method-head">
+          <code class="ref-method-name">sendChatAction()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>sendChatAction(params: { chat_id: T.ChatId; message_thread_id?: T.Integer; action: "typing" | "upload_photo" | "record_video" | "upload_video" | "record_voice" | "upload_voice" | "upload_document" | "choose_sticker" | "find_location" | "record_video_note" | "upload_video_note" })</code></pre>
+      </div>
+    </section>
+
+    <section class="ref-category" id="editing-deleting">
+      <h2>Editing / deleting</h2>
+      
+      <div class="ref-method" id="method-editmessagetext">
+        <div class="ref-method-head">
+          <code class="ref-method-name">editMessageText()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>editMessageText(params: { chat_id?: T.ChatId; message_id?: T.Integer; inline_message_id?: string; text?: string; rich_message?: T.InputRichMessage; parse_mode?: T.ParseMode; entities?: T.MessageEntity[]; link_preview_options?: T.LinkPreviewOptions; reply_markup?: T.InlineKeyboardMarkup })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-editmessagecaption">
+        <div class="ref-method-head">
+          <code class="ref-method-name">editMessageCaption()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>editMessageCaption(params: { chat_id?: T.ChatId; message_id?: T.Integer; inline_message_id?: string; caption?: string; parse_mode?: T.ParseMode; show_caption_above_media?: boolean; reply_markup?: T.InlineKeyboardMarkup })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-editmessagemedia">
+        <div class="ref-method-head">
+          <code class="ref-method-name">editMessageMedia()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>editMessageMedia(params: { chat_id?: T.ChatId; message_id?: T.Integer; inline_message_id?: string; media: T.InputMedia; reply_markup?: T.InlineKeyboardMarkup })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-editmessagereplymarkup">
+        <div class="ref-method-head">
+          <code class="ref-method-name">editMessageReplyMarkup()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>editMessageReplyMarkup(params: { chat_id?: T.ChatId; message_id?: T.Integer; inline_message_id?: string; reply_markup?: T.InlineKeyboardMarkup })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-stoppoll">
+        <div class="ref-method-head">
+          <code class="ref-method-name">stopPoll()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>stopPoll(params: { chat_id: T.ChatId; message_id: T.Integer; reply_markup?: T.InlineKeyboardMarkup })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-deletemessage">
+        <div class="ref-method-head">
+          <code class="ref-method-name">deleteMessage()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>deleteMessage(params: { chat_id: T.ChatId; message_id: T.Integer })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-deletemessages">
+        <div class="ref-method-head">
+          <code class="ref-method-name">deleteMessages()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>deleteMessages(params: { chat_id: T.ChatId; message_ids: T.Integer[] })</code></pre>
+      </div>
+    </section>
+
+    <section class="ref-category" id="ephemeral-messages-bot-api-10-2">
+      <h2>Ephemeral Messages (Bot API 10.2)</h2>
+      
+      <div class="ref-method" id="method-editephemeralmessagetext">
+        <div class="ref-method-head">
+          <code class="ref-method-name">editEphemeralMessageText()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>editEphemeralMessageText(params: { receiver_user_id: T.Integer; chat_id?: T.ChatId; ephemeral_message_id: T.Integer; text: string; parse_mode?: T.ParseMode; entities?: T.MessageEntity[]; reply_markup?: T.InlineKeyboardMarkup })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-editephemeralmessagemedia">
+        <div class="ref-method-head">
+          <code class="ref-method-name">editEphemeralMessageMedia()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>editEphemeralMessageMedia(params: { receiver_user_id: T.Integer; chat_id?: T.ChatId; ephemeral_message_id: T.Integer; media: T.InputMedia; reply_markup?: T.InlineKeyboardMarkup })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-editephemeralmessagecaption">
+        <div class="ref-method-head">
+          <code class="ref-method-name">editEphemeralMessageCaption()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>editEphemeralMessageCaption(params: { receiver_user_id: T.Integer; chat_id?: T.ChatId; ephemeral_message_id: T.Integer; caption?: string; parse_mode?: T.ParseMode; reply_markup?: T.InlineKeyboardMarkup })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-editephemeralmessagereplymarkup">
+        <div class="ref-method-head">
+          <code class="ref-method-name">editEphemeralMessageReplyMarkup()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>editEphemeralMessageReplyMarkup(params: { receiver_user_id: T.Integer; chat_id?: T.ChatId; ephemeral_message_id: T.Integer; reply_markup?: T.InlineKeyboardMarkup })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-deleteephemeralmessage">
+        <div class="ref-method-head">
+          <code class="ref-method-name">deleteEphemeralMessage()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>deleteEphemeralMessage(params: { receiver_user_id: T.Integer; chat_id?: T.ChatId; ephemeral_message_id: T.Integer })</code></pre>
+      </div>
+    </section>
+
+    <section class="ref-category" id="files">
+      <h2>Files</h2>
+      
+      <div class="ref-method" id="method-getfile">
+        <div class="ref-method-head">
+          <code class="ref-method-name">getFile()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>getFile(params: { file_id: T.FileId })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-getuserprofilephotos">
+        <div class="ref-method-head">
+          <code class="ref-method-name">getUserProfilePhotos()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>getUserProfilePhotos(params: { user_id: T.Integer; offset?: T.Integer; limit?: T.Integer })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-getuserprofileaudios">
+        <div class="ref-method-head">
+          <code class="ref-method-name">getUserProfileAudios()</code>
+          
+        </div>
+        <p class="ref-doc">Bot API 9.4+</p>
+        <pre class="ref-sig"><code>getUserProfileAudios(params: { user_id: T.Integer; offset?: T.Integer; limit?: T.Integer })</code></pre>
+      </div>
+    </section>
+
+    <section class="ref-category" id="chat-administration">
+      <h2>Chat administration</h2>
+      
+      <div class="ref-method" id="method-banchatmember">
+        <div class="ref-method-head">
+          <code class="ref-method-name">banChatMember()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>banChatMember(params: { chat_id: T.ChatId; user_id: T.Integer; until_date?: T.Integer; revoke_messages?: boolean })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-unbanchatmember">
+        <div class="ref-method-head">
+          <code class="ref-method-name">unbanChatMember()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>unbanChatMember(params: { chat_id: T.ChatId; user_id: T.Integer; only_if_banned?: boolean })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-restrictchatmember">
+        <div class="ref-method-head">
+          <code class="ref-method-name">restrictChatMember()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>restrictChatMember(params: { chat_id: T.ChatId; user_id: T.Integer; permissions: T.ChatPermissions; until_date?: T.Integer })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-promotechatmember">
+        <div class="ref-method-head">
+          <code class="ref-method-name">promoteChatMember()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>promoteChatMember(params: { chat_id: T.ChatId; user_id: T.Integer; is_anonymous?: boolean; can_manage_chat?: boolean; can_delete_messages?: boolean; can_manage_video_chats?: boolean; can_restrict_members?: boolean; can_promote_members?: boolean; can_change_info?: boolean; can_invite_users?: boolean; can_post_messages?: boolean; can_edit_messages?: boolean; can_pin_messages?: boolean; can_post_stories?: boolean; can_edit_stories?: boolean; can_delete_stories?: boolean; can_manage_topics?: boolean; can_manage_direct_messages?: boolean; can_manage_tags?: boolean })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-setchatadministratorcustomtitle">
+        <div class="ref-method-head">
+          <code class="ref-method-name">setChatAdministratorCustomTitle()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>setChatAdministratorCustomTitle(params: { chat_id: T.ChatId; user_id: T.Integer; custom_title: string })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-setchatmembertag">
+        <div class="ref-method-head">
+          <code class="ref-method-name">setChatMemberTag()</code>
+          
+        </div>
+        <p class="ref-doc">Bot API 9.5+: set a member's tag, in chats that have tags enabled.</p>
+        <pre class="ref-sig"><code>setChatMemberTag(params: { chat_id: T.ChatId; user_id: T.Integer; tag?: string })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-banchatsenderchat">
+        <div class="ref-method-head">
+          <code class="ref-method-name">banChatSenderChat()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>banChatSenderChat(params: { chat_id: T.ChatId; sender_chat_id: T.Integer })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-unbanchatsenderchat">
+        <div class="ref-method-head">
+          <code class="ref-method-name">unbanChatSenderChat()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>unbanChatSenderChat(params: { chat_id: T.ChatId; sender_chat_id: T.Integer })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-setchatpermissions">
+        <div class="ref-method-head">
+          <code class="ref-method-name">setChatPermissions()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>setChatPermissions(params: { chat_id: T.ChatId; permissions: T.ChatPermissions })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-exportchatinvitelink">
+        <div class="ref-method-head">
+          <code class="ref-method-name">exportChatInviteLink()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>exportChatInviteLink(params: { chat_id: T.ChatId })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-createchatinvitelink">
+        <div class="ref-method-head">
+          <code class="ref-method-name">createChatInviteLink()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>createChatInviteLink(params: { chat_id: T.ChatId; name?: string; expire_date?: T.Integer; member_limit?: T.Integer; creates_join_request?: boolean })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-editchatinvitelink">
+        <div class="ref-method-head">
+          <code class="ref-method-name">editChatInviteLink()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>editChatInviteLink(params: { chat_id: T.ChatId; invite_link: string; name?: string; expire_date?: T.Integer; member_limit?: T.Integer; creates_join_request?: boolean })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-revokechatinvitelink">
+        <div class="ref-method-head">
+          <code class="ref-method-name">revokeChatInviteLink()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>revokeChatInviteLink(params: { chat_id: T.ChatId; invite_link: string })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-approvechatjoinrequest">
+        <div class="ref-method-head">
+          <code class="ref-method-name">approveChatJoinRequest()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>approveChatJoinRequest(params: { chat_id: T.ChatId; user_id: T.Integer })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-declinechatjoinrequest">
+        <div class="ref-method-head">
+          <code class="ref-method-name">declineChatJoinRequest()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>declineChatJoinRequest(params: { chat_id: T.ChatId; user_id: T.Integer })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-answerchatjoinrequestquery">
+        <div class="ref-method-head">
+          <code class="ref-method-name">answerChatJoinRequestQuery()</code>
+          
+        </div>
+        <p class="ref-doc">Bot API 10.1+: respond to a join request raised as a query.</p>
+        <pre class="ref-sig"><code>answerChatJoinRequestQuery(params: { query_id: string; approve: boolean })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-sendchatjoinrequestwebapp">
+        <div class="ref-method-head">
+          <code class="ref-method-name">sendChatJoinRequestWebApp()</code>
+          
+        </div>
+        <p class="ref-doc">Bot API 10.1+: open a Web App from a chat join request to let the user complete additional steps before approval.</p>
+        <pre class="ref-sig"><code>sendChatJoinRequestWebApp(params: { query_id: string; web_app: T.WebAppInfo })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-setchatphoto">
+        <div class="ref-method-head">
+          <code class="ref-method-name">setChatPhoto()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>setChatPhoto(params: { chat_id: T.ChatId; photo: T.InputFile })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-deletechatphoto">
+        <div class="ref-method-head">
+          <code class="ref-method-name">deleteChatPhoto()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>deleteChatPhoto(params: { chat_id: T.ChatId })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-setchattitle">
+        <div class="ref-method-head">
+          <code class="ref-method-name">setChatTitle()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>setChatTitle(params: { chat_id: T.ChatId; title: string })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-setchatdescription">
+        <div class="ref-method-head">
+          <code class="ref-method-name">setChatDescription()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>setChatDescription(params: { chat_id: T.ChatId; description?: string })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-pinchatmessage">
+        <div class="ref-method-head">
+          <code class="ref-method-name">pinChatMessage()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>pinChatMessage(params: { chat_id: T.ChatId; message_id: T.Integer; disable_notification?: boolean })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-unpinchatmessage">
+        <div class="ref-method-head">
+          <code class="ref-method-name">unpinChatMessage()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>unpinChatMessage(params: { chat_id: T.ChatId; message_id?: T.Integer })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-unpinallchatmessages">
+        <div class="ref-method-head">
+          <code class="ref-method-name">unpinAllChatMessages()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>unpinAllChatMessages(params: { chat_id: T.ChatId })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-leavechat">
+        <div class="ref-method-head">
+          <code class="ref-method-name">leaveChat()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>leaveChat(params: { chat_id: T.ChatId })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-getchat">
+        <div class="ref-method-head">
+          <code class="ref-method-name">getChat()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>getChat(params: { chat_id: T.ChatId })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-getchatadministrators">
+        <div class="ref-method-head">
+          <code class="ref-method-name">getChatAdministrators()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>getChatAdministrators(params: { chat_id: T.ChatId; return_bots?: boolean })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-getchatmembercount">
+        <div class="ref-method-head">
+          <code class="ref-method-name">getChatMemberCount()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>getChatMemberCount(params: { chat_id: T.ChatId })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-getchatmember">
+        <div class="ref-method-head">
+          <code class="ref-method-name">getChatMember()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>getChatMember(params: { chat_id: T.ChatId; user_id: T.Integer })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-setchatstickerset">
+        <div class="ref-method-head">
+          <code class="ref-method-name">setChatStickerSet()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>setChatStickerSet(params: { chat_id: T.ChatId; sticker_set_name: string })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-deletechatstickerset">
+        <div class="ref-method-head">
+          <code class="ref-method-name">deleteChatStickerSet()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>deleteChatStickerSet(params: { chat_id: T.ChatId })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-setmessagereaction">
+        <div class="ref-method-head">
+          <code class="ref-method-name">setMessageReaction()</code>
+          
+        </div>
+        <p class="ref-doc">React to a message with emoji/custom-emoji/paid reactions (Bot API 7.0+).</p>
+        <pre class="ref-sig"><code>setMessageReaction(params: { chat_id: T.ChatId; message_id: T.Integer; reaction?: T.ReactionType[]; is_big?: boolean })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-deleteallmessagereactions">
+        <div class="ref-method-head">
+          <code class="ref-method-name">deleteAllMessageReactions()</code>
+          
+        </div>
+        <p class="ref-doc">Bot API 10.0+</p>
+        <pre class="ref-sig"><code>deleteAllMessageReactions(params: { chat_id: T.ChatId; message_id: T.Integer })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-deletemessagereaction">
+        <div class="ref-method-head">
+          <code class="ref-method-name">deleteMessageReaction()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>deleteMessageReaction(params: { chat_id: T.ChatId; message_id: T.Integer; user_id: T.Integer })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-getuserchatboosts">
+        <div class="ref-method-head">
+          <code class="ref-method-name">getUserChatBoosts()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>getUserChatBoosts(params: { chat_id: T.ChatId; user_id: T.Integer })</code></pre>
+      </div>
+    </section>
+
+    <section class="ref-category" id="forum-topics">
+      <h2>Forum topics</h2>
+      
+      <div class="ref-method" id="method-getforumtopiciconstickers">
+        <div class="ref-method-head">
+          <code class="ref-method-name">getForumTopicIconStickers()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>getForumTopicIconStickers()</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-createforumtopic">
+        <div class="ref-method-head">
+          <code class="ref-method-name">createForumTopic()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>createForumTopic(params: { chat_id: T.ChatId; name: string; icon_color?: T.Integer; icon_custom_emoji_id?: string })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-editforumtopic">
+        <div class="ref-method-head">
+          <code class="ref-method-name">editForumTopic()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>editForumTopic(params: { chat_id: T.ChatId; message_thread_id: T.Integer; name?: string; icon_custom_emoji_id?: string })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-closeforumtopic">
+        <div class="ref-method-head">
+          <code class="ref-method-name">closeForumTopic()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>closeForumTopic(params: { chat_id: T.ChatId; message_thread_id: T.Integer })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-reopenforumtopic">
+        <div class="ref-method-head">
+          <code class="ref-method-name">reopenForumTopic()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>reopenForumTopic(params: { chat_id: T.ChatId; message_thread_id: T.Integer })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-deleteforumtopic">
+        <div class="ref-method-head">
+          <code class="ref-method-name">deleteForumTopic()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>deleteForumTopic(params: { chat_id: T.ChatId; message_thread_id: T.Integer })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-unpinallforumtopicmessages">
+        <div class="ref-method-head">
+          <code class="ref-method-name">unpinAllForumTopicMessages()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>unpinAllForumTopicMessages(params: { chat_id: T.ChatId; message_thread_id: T.Integer })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-editgeneralforumtopic">
+        <div class="ref-method-head">
+          <code class="ref-method-name">editGeneralForumTopic()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>editGeneralForumTopic(params: { chat_id: T.ChatId; name: string })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-closegeneralforumtopic">
+        <div class="ref-method-head">
+          <code class="ref-method-name">closeGeneralForumTopic()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>closeGeneralForumTopic(params: { chat_id: T.ChatId })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-reopengeneralforumtopic">
+        <div class="ref-method-head">
+          <code class="ref-method-name">reopenGeneralForumTopic()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>reopenGeneralForumTopic(params: { chat_id: T.ChatId })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-hidegeneralforumtopic">
+        <div class="ref-method-head">
+          <code class="ref-method-name">hideGeneralForumTopic()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>hideGeneralForumTopic(params: { chat_id: T.ChatId })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-unhidegeneralforumtopic">
+        <div class="ref-method-head">
+          <code class="ref-method-name">unhideGeneralForumTopic()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>unhideGeneralForumTopic(params: { chat_id: T.ChatId })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-unpinallgeneralforumtopicmessages">
+        <div class="ref-method-head">
+          <code class="ref-method-name">unpinAllGeneralForumTopicMessages()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>unpinAllGeneralForumTopicMessages(params: { chat_id: T.ChatId })</code></pre>
+      </div>
+    </section>
+
+    <section class="ref-category" id="bot-profile-commands-menu">
+      <h2>Bot profile / commands / menu</h2>
+      
+      <div class="ref-method" id="method-setmycommands">
+        <div class="ref-method-head">
+          <code class="ref-method-name">setMyCommands()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>setMyCommands(params: { commands: T.BotCommand[]; scope?: T.BotCommandScope; language_code?: string })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-deletemycommands">
+        <div class="ref-method-head">
+          <code class="ref-method-name">deleteMyCommands()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>deleteMyCommands(params: { scope?: T.BotCommandScope; language_code?: string } = {})</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-getmycommands">
+        <div class="ref-method-head">
+          <code class="ref-method-name">getMyCommands()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>getMyCommands(params: { scope?: T.BotCommandScope; language_code?: string } = {})</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-setchatmenubutton">
+        <div class="ref-method-head">
+          <code class="ref-method-name">setChatMenuButton()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>setChatMenuButton(params: { chat_id?: T.Integer; menu_button?: T.MenuButton } = {})</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-getchatmenubutton">
+        <div class="ref-method-head">
+          <code class="ref-method-name">getChatMenuButton()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>getChatMenuButton(params: { chat_id?: T.Integer } = {})</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-setmydefaultadministratorrights">
+        <div class="ref-method-head">
+          <code class="ref-method-name">setMyDefaultAdministratorRights()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>setMyDefaultAdministratorRights(params: { rights?: T.ChatAdministratorRights; for_channels?: boolean } = {})</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-getmydefaultadministratorrights">
+        <div class="ref-method-head">
+          <code class="ref-method-name">getMyDefaultAdministratorRights()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>getMyDefaultAdministratorRights(params: { for_channels?: boolean } = {})</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-setmyname">
+        <div class="ref-method-head">
+          <code class="ref-method-name">setMyName()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>setMyName(params: { name?: string; language_code?: string } = {})</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-getmyname">
+        <div class="ref-method-head">
+          <code class="ref-method-name">getMyName()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>getMyName(params: { language_code?: string } = {}) { return this.call&lt;</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-setmydescription">
+        <div class="ref-method-head">
+          <code class="ref-method-name">setMyDescription()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>setMyDescription(params: { description?: string; language_code?: string } = {})</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-getmydescription">
+        <div class="ref-method-head">
+          <code class="ref-method-name">getMyDescription()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>getMyDescription(params: { language_code?: string } = {}) { return this.call&lt;</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-setmyshortdescription">
+        <div class="ref-method-head">
+          <code class="ref-method-name">setMyShortDescription()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>setMyShortDescription(params: { short_description?: string; language_code?: string } = {})</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-getmyshortdescription">
+        <div class="ref-method-head">
+          <code class="ref-method-name">getMyShortDescription()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>getMyShortDescription(params: { language_code?: string } = {}) { return this.call&lt;</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-setmyprofilephoto">
+        <div class="ref-method-head">
+          <code class="ref-method-name">setMyProfilePhoto()</code>
+          
+        </div>
+        <p class="ref-doc">Bot API 9.6+</p>
+        <pre class="ref-sig"><code>setMyProfilePhoto(params: { photo: T.InputProfilePhoto })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-setuseremojistatus">
+        <div class="ref-method-head">
+          <code class="ref-method-name">setUserEmojiStatus()</code>
+          
+        </div>
+        <p class="ref-doc">Bot API 8.0+: change a user's emoji status, if they've granted the bot permission via a Mini App.</p>
+        <pre class="ref-sig"><code>setUserEmojiStatus(params: { user_id: T.Integer; emoji_status_custom_emoji_id?: string; emoji_status_expiration_date?: T.Integer })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-removemyprofilephoto">
+        <div class="ref-method-head">
+          <code class="ref-method-name">removeMyProfilePhoto()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>removeMyProfilePhoto()</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-setpassportdataerrors">
+        <div class="ref-method-head">
+          <code class="ref-method-name">setPassportDataErrors()</code>
+          
+        </div>
+        <p class="ref-doc">Telegram Passport: report validation errors on a user's submitted Passport data.</p>
+        <pre class="ref-sig"><code>setPassportDataErrors(params: { user_id: T.Integer; errors: T.PassportElementError[] })</code></pre>
+      </div>
+    </section>
+
+    <section class="ref-category" id="callback-inline-queries">
+      <h2>Callback / inline queries</h2>
+      
+      <div class="ref-method" id="method-answercallbackquery">
+        <div class="ref-method-head">
+          <code class="ref-method-name">answerCallbackQuery()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>answerCallbackQuery(params: { callback_query_id: string; text?: string; show_alert?: boolean; url?: string; cache_time?: T.Integer })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-answergamequery">
+        <div class="ref-method-head">
+          <code class="ref-method-name">answerGameQuery()</code>
+          <span class="ref-api-name">→ answerCallbackQuery</span>
+        </div>
+        <p class="ref-doc">Same endpoint as answerCallbackQuery, but for opening a game's URL from a callback query.</p>
+        <pre class="ref-sig"><code>answerGameQuery(params: { callback_query_id: string; url: string })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-answerinlinequery">
+        <div class="ref-method-head">
+          <code class="ref-method-name">answerInlineQuery()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>answerInlineQuery(params: { inline_query_id: string; results: T.InlineQueryResult[]; cache_time?: T.Integer; is_personal?: boolean; next_offset?: string; button?: T.InlineQueryResultsButton })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-answerwebappquery">
+        <div class="ref-method-head">
+          <code class="ref-method-name">answerWebAppQuery()</code>
+          
+        </div>
+        <p class="ref-doc">Set the result of an interaction with a Web App and send its corresponding message to the chat.</p>
+        <pre class="ref-sig"><code>answerWebAppQuery(params: { web_app_query_id: string; result: T.InlineQueryResult })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-savepreparedinlinemessage">
+        <div class="ref-method-head">
+          <code class="ref-method-name">savePreparedInlineMessage()</code>
+          
+        </div>
+        <p class="ref-doc">Bot API 8.0+: let a Mini App hand a pre-built inline result to the user to share, without leaving the app.</p>
+        <pre class="ref-sig"><code>savePreparedInlineMessage(params: { user_id: T.Integer; result: T.InlineQueryResult; allow_user_chats?: boolean; allow_bot_chats?: boolean; allow_group_chats?: boolean; allow_channel_chats?: boolean })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-savepreparedkeyboardbutton">
+        <div class="ref-method-head">
+          <code class="ref-method-name">savePreparedKeyboardButton()</code>
+          
+        </div>
+        <p class="ref-doc">Bot API 9.6+: prepares a keyboard button that a Mini App can show to let the user request creating a managed bot — distinct from savePreparedInlineMessage above.</p>
+        <pre class="ref-sig"><code>savePreparedKeyboardButton(params: { user_id: T.Integer; button: T.KeyboardButtonRequestManagedBot })</code></pre>
+      </div>
+    </section>
+
+    <section class="ref-category" id="payments">
+      <h2>Payments</h2>
+      
+      <div class="ref-method" id="method-sendinvoice">
+        <div class="ref-method-head">
+          <code class="ref-method-name">sendInvoice()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>sendInvoice(params: { chat_id: T.ChatId; title: string; description: string; payload: string; provider_token?: string; currency: string; prices: T.LabeledPrice[]; max_tip_amount?: T.Integer; suggested_tip_amounts?: T.Integer[]; start_parameter?: string; provider_data?: string; photo_url?: string; photo_size?: T.Integer; photo_width?: T.Integer; photo_height?: T.Integer; need_name?: boolean; need_phone_number?: boolean; need_email?: boolean; need_shipping_address?: boolean; send_phone_number_to_provider?: boolean; send_email_to_provider?: boolean; is_flexible?: boolean } &amp; CommonSendOptions)</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-createinvoicelink">
+        <div class="ref-method-head">
+          <code class="ref-method-name">createInvoiceLink()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>createInvoiceLink(params:</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-answershippingquery">
+        <div class="ref-method-head">
+          <code class="ref-method-name">answerShippingQuery()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>answerShippingQuery(params: { shipping_query_id: string; ok: boolean; shipping_options?: T.ShippingOption[]; error_message?: string })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-answerprecheckoutquery">
+        <div class="ref-method-head">
+          <code class="ref-method-name">answerPreCheckoutQuery()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>answerPreCheckoutQuery(params: { pre_checkout_query_id: string; ok: boolean; error_message?: string })</code></pre>
+      </div>
+    </section>
+
+    <section class="ref-category" id="stickers">
+      <h2>Stickers</h2>
+      
+      <div class="ref-method" id="method-getstickerset">
+        <div class="ref-method-head">
+          <code class="ref-method-name">getStickerSet()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>getStickerSet(params: { name: string })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-getcustomemojistickers">
+        <div class="ref-method-head">
+          <code class="ref-method-name">getCustomEmojiStickers()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>getCustomEmojiStickers(params: { custom_emoji_ids: string[] })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-uploadstickerfile">
+        <div class="ref-method-head">
+          <code class="ref-method-name">uploadStickerFile()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>uploadStickerFile(params: { user_id: T.Integer; sticker: T.InputFile; sticker_format: "static" | "animated" | "video" })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-createnewstickerset">
+        <div class="ref-method-head">
+          <code class="ref-method-name">createNewStickerSet()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>createNewStickerSet(params: { user_id: T.Integer; name: string; title: string; stickers: T.InputSticker[]; sticker_type?: "regular" | "mask" | "custom_emoji"; needs_repainting?: boolean })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-addstickertoset">
+        <div class="ref-method-head">
+          <code class="ref-method-name">addStickerToSet()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>addStickerToSet(params: { user_id: T.Integer; name: string; sticker: T.InputSticker })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-setstickerpositioninset">
+        <div class="ref-method-head">
+          <code class="ref-method-name">setStickerPositionInSet()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>setStickerPositionInSet(params: { sticker: T.FileId; position: T.Integer })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-deletestickerfromset">
+        <div class="ref-method-head">
+          <code class="ref-method-name">deleteStickerFromSet()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>deleteStickerFromSet(params: { sticker: T.FileId })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-setstickeremojilist">
+        <div class="ref-method-head">
+          <code class="ref-method-name">setStickerEmojiList()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>setStickerEmojiList(params: { sticker: T.FileId; emoji_list: string[] })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-setstickerkeywords">
+        <div class="ref-method-head">
+          <code class="ref-method-name">setStickerKeywords()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>setStickerKeywords(params: { sticker: T.FileId; keywords?: string[] })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-setstickermaskposition">
+        <div class="ref-method-head">
+          <code class="ref-method-name">setStickerMaskPosition()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>setStickerMaskPosition(params: { sticker: T.FileId; mask_position?: T.MaskPosition })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-setstickersettitle">
+        <div class="ref-method-head">
+          <code class="ref-method-name">setStickerSetTitle()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>setStickerSetTitle(params: { name: string; title: string })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-setstickersetthumbnail">
+        <div class="ref-method-head">
+          <code class="ref-method-name">setStickerSetThumbnail()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>setStickerSetThumbnail(params: { name: string; user_id: T.Integer; thumbnail?: T.InputFile; format: string })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-setcustomemojistickersetthumbnail">
+        <div class="ref-method-head">
+          <code class="ref-method-name">setCustomEmojiStickerSetThumbnail()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>setCustomEmojiStickerSetThumbnail(params: { name: string; custom_emoji_id?: string })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-deletestickerset">
+        <div class="ref-method-head">
+          <code class="ref-method-name">deleteStickerSet()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>deleteStickerSet(params: { name: string })</code></pre>
+      </div>
+    </section>
+
+    <section class="ref-category" id="games">
+      <h2>Games</h2>
+      
+      <div class="ref-method" id="method-sendgame">
+        <div class="ref-method-head">
+          <code class="ref-method-name">sendGame()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>sendGame(params: { chat_id: T.Integer; game_short_name: string } &amp; CommonSendOptions)</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-setgamescore">
+        <div class="ref-method-head">
+          <code class="ref-method-name">setGameScore()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>setGameScore(params: { user_id: T.Integer; score: T.Integer; force?: boolean; chat_id?: T.Integer; message_id?: T.Integer; inline_message_id?: string })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-getgamehighscores">
+        <div class="ref-method-head">
+          <code class="ref-method-name">getGameHighScores()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>getGameHighScores(params: { user_id: T.Integer; chat_id?: T.Integer; message_id?: T.Integer; inline_message_id?: string })</code></pre>
+      </div>
+    </section>
+
+    <section class="ref-category" id="checklists-bot-api-9-1-sent-edited-on-behalf-of-a-business-account-only">
+      <h2>Checklists (Bot API 9.1) — sent/edited on behalf of a business account only</h2>
+      
+      <div class="ref-method" id="method-sendchecklist">
+        <div class="ref-method-head">
+          <code class="ref-method-name">sendChecklist()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>sendChecklist(params: { business_connection_id: string; chat_id: T.ChatId; checklist: T.InputChecklist; disable_notification?: boolean; protect_content?: boolean; message_effect_id?: string; reply_parameters?: T.ReplyParameters; reply_markup?: T.InlineKeyboardMarkup })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-editmessagechecklist">
+        <div class="ref-method-head">
+          <code class="ref-method-name">editMessageChecklist()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>editMessageChecklist(params: { business_connection_id: string; chat_id: T.ChatId; message_id: T.Integer; checklist: T.InputChecklist; reply_markup?: T.InlineKeyboardMarkup })</code></pre>
+      </div>
+    </section>
+
+    <section class="ref-category" id="business-accounts">
+      <h2>Business accounts</h2>
+      
+      <div class="ref-method" id="method-getbusinessconnection">
+        <div class="ref-method-head">
+          <code class="ref-method-name">getBusinessConnection()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>getBusinessConnection(params: { business_connection_id: string })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-readbusinessmessage">
+        <div class="ref-method-head">
+          <code class="ref-method-name">readBusinessMessage()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>readBusinessMessage(params: { business_connection_id: string; chat_id: T.Integer; message_id: T.Integer })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-deletebusinessmessages">
+        <div class="ref-method-head">
+          <code class="ref-method-name">deleteBusinessMessages()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>deleteBusinessMessages(params: { business_connection_id: string; message_ids: T.Integer[] })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-setbusinessaccountname">
+        <div class="ref-method-head">
+          <code class="ref-method-name">setBusinessAccountName()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>setBusinessAccountName(params: { business_connection_id: string; first_name: string; last_name?: string })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-setbusinessaccountusername">
+        <div class="ref-method-head">
+          <code class="ref-method-name">setBusinessAccountUsername()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>setBusinessAccountUsername(params: { business_connection_id: string; username?: string })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-setbusinessaccountbio">
+        <div class="ref-method-head">
+          <code class="ref-method-name">setBusinessAccountBio()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>setBusinessAccountBio(params: { business_connection_id: string; bio?: string })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-setbusinessaccountprofilephoto">
+        <div class="ref-method-head">
+          <code class="ref-method-name">setBusinessAccountProfilePhoto()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>setBusinessAccountProfilePhoto(params: { business_connection_id: string; photo: T.InputProfilePhoto; is_public?: boolean })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-removebusinessaccountprofilephoto">
+        <div class="ref-method-head">
+          <code class="ref-method-name">removeBusinessAccountProfilePhoto()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>removeBusinessAccountProfilePhoto(params: { business_connection_id: string; is_public?: boolean })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-setbusinessaccountgiftsettings">
+        <div class="ref-method-head">
+          <code class="ref-method-name">setBusinessAccountGiftSettings()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>setBusinessAccountGiftSettings(params: { business_connection_id: string; show_gift_button: boolean; accepted_gift_types: T.AcceptedGiftTypes })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-getbusinessaccountstarbalance">
+        <div class="ref-method-head">
+          <code class="ref-method-name">getBusinessAccountStarBalance()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>getBusinessAccountStarBalance(params: { business_connection_id: string }) { return this.call&lt;</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-transferbusinessaccountstars">
+        <div class="ref-method-head">
+          <code class="ref-method-name">transferBusinessAccountStars()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>transferBusinessAccountStars(params: { business_connection_id: string; star_count: T.Integer })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-getbusinessaccountgifts">
+        <div class="ref-method-head">
+          <code class="ref-method-name">getBusinessAccountGifts()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>getBusinessAccountGifts(params: { business_connection_id: string; exclude_unsaved?: boolean; exclude_saved?: boolean; exclude_unlimited?: boolean; exclude_limited_upgradable?: boolean; exclude_limited_non_upgradable?: boolean; exclude_unique?: boolean; exclude_from_blockchain?: boolean; sort_by_price?: boolean; offset?: string; limit?: T.Integer })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-getusergifts">
+        <div class="ref-method-head">
+          <code class="ref-method-name">getUserGifts()</code>
+          
+        </div>
+        <p class="ref-doc">Bot API 9.3+</p>
+        <pre class="ref-sig"><code>getUserGifts(params: { user_id: T.Integer; offset?: string; limit?: T.Integer })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-getchatgifts">
+        <div class="ref-method-head">
+          <code class="ref-method-name">getChatGifts()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>getChatGifts(params: { chat_id: T.ChatId; offset?: string; limit?: T.Integer })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-convertgifttostars">
+        <div class="ref-method-head">
+          <code class="ref-method-name">convertGiftToStars()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>convertGiftToStars(params: { business_connection_id: string; owned_gift_id: string })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-upgradegift">
+        <div class="ref-method-head">
+          <code class="ref-method-name">upgradeGift()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>upgradeGift(params: { business_connection_id: string; owned_gift_id: string; keep_original_details?: boolean; star_count?: T.Integer })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-transfergift">
+        <div class="ref-method-head">
+          <code class="ref-method-name">transferGift()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>transferGift(params: { business_connection_id: string; owned_gift_id: string; new_owner_chat_id: T.Integer; star_count?: T.Integer })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-poststory">
+        <div class="ref-method-head">
+          <code class="ref-method-name">postStory()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>postStory(params: { business_connection_id: string; content: T.InputStoryContent; active_period: T.Integer; caption?: string; parse_mode?: T.ParseMode; caption_entities?: T.MessageEntity[]; areas?: T.StoryArea[]; post_to_chat_page?: boolean; protect_content?: boolean })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-editstory">
+        <div class="ref-method-head">
+          <code class="ref-method-name">editStory()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>editStory(params: { business_connection_id: string; story_id: T.Integer; content: T.InputStoryContent; caption?: string; parse_mode?: T.ParseMode; caption_entities?: T.MessageEntity[]; areas?: T.StoryArea[] })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-deletestory">
+        <div class="ref-method-head">
+          <code class="ref-method-name">deleteStory()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>deleteStory(params: { business_connection_id: string; story_id: T.Integer })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-repoststory">
+        <div class="ref-method-head">
+          <code class="ref-method-name">repostStory()</code>
+          
+        </div>
+        <p class="ref-doc">Bot API 9.x+: repost a story across different business accounts the bot manages.</p>
+        <pre class="ref-sig"><code>repostStory(params: { business_connection_id: string; story_id: T.Integer; active_period?: T.Integer })</code></pre>
+      </div>
+    </section>
+
+    <section class="ref-category" id="verification-bot-api-8-2">
+      <h2>Verification (Bot API 8.2+)</h2>
+      
+      <div class="ref-method" id="method-verifyuser">
+        <div class="ref-method-head">
+          <code class="ref-method-name">verifyUser()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>verifyUser(params: { user_id: T.Integer; custom_description?: string })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-verifychat">
+        <div class="ref-method-head">
+          <code class="ref-method-name">verifyChat()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>verifyChat(params: { chat_id: T.ChatId; custom_description?: string })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-removeuserverification">
+        <div class="ref-method-head">
+          <code class="ref-method-name">removeUserVerification()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>removeUserVerification(params: { user_id: T.Integer })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-removechatverification">
+        <div class="ref-method-head">
+          <code class="ref-method-name">removeChatVerification()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>removeChatVerification(params: { chat_id: T.ChatId })</code></pre>
+      </div>
+    </section>
+
+    <section class="ref-category" id="gifts-bot-api-8-0">
+      <h2>Gifts (Bot API 8.0+)</h2>
+      
+      <div class="ref-method" id="method-getavailablegifts">
+        <div class="ref-method-head">
+          <code class="ref-method-name">getAvailableGifts()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>getAvailableGifts()</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-sendgift">
+        <div class="ref-method-head">
+          <code class="ref-method-name">sendGift()</code>
+          
+        </div>
+        <p class="ref-doc">Send a gift to a user or channel chat (exactly one of user_id/chat_id). Can't be converted to Stars by the receiver.</p>
+        <pre class="ref-sig"><code>sendGift(params: { gift_id: string; user_id?: T.Integer; chat_id?: T.ChatId; pay_for_upgrade?: boolean; text?: string; text_parse_mode?: T.ParseMode; text_entities?: T.MessageEntity[] })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-giftpremiumsubscription">
+        <div class="ref-method-head">
+          <code class="ref-method-name">giftPremiumSubscription()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>giftPremiumSubscription(params: { user_id: T.Integer; month_count: T.Integer; star_count: T.Integer; text?: string; text_parse_mode?: T.ParseMode; text_entities?: T.MessageEntity[] })</code></pre>
+      </div>
+    </section>
+
+    <section class="ref-category" id="stars-payments-transactions-bot-api-7-4">
+      <h2>Stars &amp; Payments transactions (Bot API 7.4+)</h2>
+      
+      <div class="ref-method" id="method-getstartransactions">
+        <div class="ref-method-head">
+          <code class="ref-method-name">getStarTransactions()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>getStarTransactions(params: { offset?: T.Integer; limit?: T.Integer } = {})</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-getmystarbalance">
+        <div class="ref-method-head">
+          <code class="ref-method-name">getMyStarBalance()</code>
+          
+        </div>
+        <p class="ref-doc">Bot API 9.3+: the bot's own Stars balance.</p>
+        <pre class="ref-sig"><code>getMyStarBalance()</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-refundstarpayment">
+        <div class="ref-method-head">
+          <code class="ref-method-name">refundStarPayment()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>refundStarPayment(params: { user_id: T.Integer; telegram_payment_charge_id: string })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-edituserstarsubscription">
+        <div class="ref-method-head">
+          <code class="ref-method-name">editUserStarSubscription()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>editUserStarSubscription(params: { user_id: T.Integer; telegram_payment_charge_id: string; is_canceled: boolean })</code></pre>
+      </div>
+    </section>
+
+    <section class="ref-category" id="suggested-posts-direct-messages-in-channels-bot-api-9-2">
+      <h2>Suggested Posts / Direct Messages in Channels (Bot API 9.2+)</h2>
+      
+      <div class="ref-method" id="method-approvesuggestedpost">
+        <div class="ref-method-head">
+          <code class="ref-method-name">approveSuggestedPost()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>approveSuggestedPost(params: { chat_id: T.ChatId; message_id: T.Integer; send_date?: T.Integer })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-declinesuggestedpost">
+        <div class="ref-method-head">
+          <code class="ref-method-name">declineSuggestedPost()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>declineSuggestedPost(params: { chat_id: T.ChatId; message_id: T.Integer; comment?: string })</code></pre>
+      </div>
+    </section>
+
+    <section class="ref-category" id="guest-mode-bot-api-10-0-bots-being-mentioned-queried-by-users-they-have-no-direct-relationship-with">
+      <h2>Guest mode (Bot API 10.0+) — bots being mentioned/queried by users they have no direct relationship with</h2>
+      
+      <div class="ref-method" id="method-answerguestquery">
+        <div class="ref-method-head">
+          <code class="ref-method-name">answerGuestQuery()</code>
+          
+        </div>
+        <p class="ref-doc">Respond to a guest_message update, matching the shape of answerWebAppQuery.</p>
+        <pre class="ref-sig"><code>answerGuestQuery(params: { guest_query_id: string; result: T.InlineQueryResult })</code></pre>
+      </div>
+    </section>
+
+    <section class="ref-category" id="managed-bots-bot-api-9-5-9-6">
+      <h2>Managed Bots (Bot API 9.5/9.6)</h2>
+      
+      <div class="ref-method" id="method-getmanagedbottoken">
+        <div class="ref-method-head">
+          <code class="ref-method-name">getManagedBotToken()</code>
+          
+        </div>
+        <p class="ref-doc">Retrieve the token of a bot your bot manages, after it's created via the newbot deep link flow.</p>
+        <pre class="ref-sig"><code>getManagedBotToken(params: { bot_id: T.Integer }) { return this.call&lt;</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-replacemanagedbottoken">
+        <div class="ref-method-head">
+          <code class="ref-method-name">replaceManagedBotToken()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>replaceManagedBotToken(params: { bot_id: T.Integer }) { return this.call&lt;</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-getmanagedbotaccesssettings">
+        <div class="ref-method-head">
+          <code class="ref-method-name">getManagedBotAccessSettings()</code>
+          
+        </div>
+        <p class="ref-doc">Bot API 10.0+</p>
+        <pre class="ref-sig"><code>getManagedBotAccessSettings(params: { bot_id: T.Integer })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-setmanagedbotaccesssettings">
+        <div class="ref-method-head">
+          <code class="ref-method-name">setManagedBotAccessSettings()</code>
+          
+        </div>
+        
+        <pre class="ref-sig"><code>setManagedBotAccessSettings(params: { bot_id: T.Integer; access_settings: T.BotAccessSettings })</code></pre>
+      </div>
+
+      <div class="ref-method" id="method-getuserpersonalchatmessages">
+        <div class="ref-method-head">
+          <code class="ref-method-name">getUserPersonalChatMessages()</code>
+          
+        </div>
+        <p class="ref-doc">Bot API 10.0+: fetch messages from a user's personal chat (e.g. to display in a Mini App).</p>
+        <pre class="ref-sig"><code>getUserPersonalChatMessages(params: { user_id: T.Integer; offset?: T.Integer; limit?: T.Integer })</code></pre>
+      </div>
+    </section>
+</main>
+</body>
+</html>
