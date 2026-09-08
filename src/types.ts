@@ -1,6 +1,6 @@
 /**
  * ayotbl — Telegram Bot API type definitions
- * Tracks Bot API 10.1 (2026-06-11), including Rich Messages and Managed Bots.
+ * Tracks Bot API 10.3 (2026-08-24), including Rich Messages, Ephemeral Messages, and Managed Bots.
  * Not every field of every object is written by hand: `[key: string]: any`
  * escape hatches are intentionally avoided here so you get real autocomplete,
  * but `RawApiMethods` in client.ts covers any method not yet given a typed
@@ -120,6 +120,11 @@ export interface CommunityChatAdded {
 }
 
 export interface CommunityChatRemoved {
+  community: Community;
+}
+
+/** Bot API 10.3+: service message about a chat joining a community. */
+export interface CommunityChatJoined {
   community: Community;
 }
 
@@ -354,6 +359,8 @@ export interface Message {
   /** Bot API 10.2+ service messages for Communities. */
   community_chat_added?: CommunityChatAdded;
   community_chat_removed?: CommunityChatRemoved;
+  /** Bot API 10.3+: service message about a chat joining a community. */
+  community_chat_joined?: CommunityChatJoined;
   checklist?: Checklist;
   checklist_tasks_done?: ChecklistTasksDone;
   checklist_tasks_added?: ChecklistTasksAdded;
@@ -578,6 +585,8 @@ export interface ReplyKeyboardMarkup {
   one_time_keyboard?: boolean;
   input_field_placeholder?: string;
   selective?: boolean;
+  /** Bot API 10.3+: if set, the client will act as though the user has replied to a force reply. */
+  force_reply?: ForceReply;
 }
 
 export interface KeyboardButtonPollType {
@@ -645,10 +654,18 @@ export interface ForceReply {
 
 export interface InlineKeyboardMarkup {
   inline_keyboard: InlineKeyboardButton[][];
+  /** Bot API 10.3+: if set, the client will act as though the user has replied to a force reply. */
+  force_reply?: ForceReply;
 }
 
 export interface CopyTextButton {
   text: string;
+}
+
+/** Bot API 10.3+: information about the disabled state of an InlineKeyboardButton. */
+export interface DisabledButton {
+  /** Alternative text shown instead of the original button text when the button is disabled. */
+  text?: string;
 }
 
 export interface SwitchInlineQueryChosenChat {
@@ -673,6 +690,8 @@ export interface InlineKeyboardButton {
   pay?: boolean;
   icon_custom_emoji_id?: string;
   style?: "primary" | "success" | "danger";
+  /** Bot API 10.3+: if set, the button is shown as disabled (greyed out, non-interactive). */
+  disabled?: DisabledButton;
 }
 
 export interface WebAppInfo {
@@ -719,9 +738,10 @@ export interface InputRichMessage {
 }
 
 export interface InputRichMessageMedia {
-  /** Referenced by id from InputRichBlock's media variants (photo/video/audio/animation/voice_note) — confirmed required by a live "Can't find field 'id'" 400 from Telegram. */
+  /** Referenced by id from InputRichBlock's media variants (photo/video/audio/animation/voice_note/document) — confirmed required by a live "Can't find field 'id'" 400 from Telegram. */
   id: string;
-  type: "photo" | "video" | "audio" | "animation" | "voice_note";
+  /** Bot API 10.3+: "document" added for tg://document?id= support in rich messages. */
+  type: "photo" | "video" | "audio" | "animation" | "voice_note" | "document";
   media: InputFile;
 }
 
@@ -733,7 +753,16 @@ export interface InputRichMessageContent {
 /** The received counterpart of InputRichMessage — Message.rich_message has this type. */
 export interface RichMessage {
   blocks: RichBlock[];
+  /** Bot API 10.3+: buttons attached to this rich message. */
+  buttons?: RichMessageButton[];
   is_rtl?: boolean;
+}
+
+/** Bot API 10.3+: a button attached to a RichMessage. */
+export interface RichMessageButton {
+  text: string;
+  url?: string;
+  callback_data?: string;
 }
 
 /**
@@ -767,7 +796,9 @@ export type RichTextTagged =
   | { type: "anchor"; name: string }
   | { type: "anchor_link"; text: RichText; anchor_name: string }
   | { type: "reference"; text: RichText; name: string }
-  | { type: "reference_link"; text: RichText; reference_name: string };
+  | { type: "reference_link"; text: RichText; reference_name: string }
+  /** Bot API 10.3+: inline button within rich text. */
+  | { type: "button"; text: RichText; button: RichMessageButton };
 
 /** Caption attached to a media/collage/slideshow/map block. */
 export interface RichBlockCaption {
@@ -808,7 +839,7 @@ export type RichBlock =
   | { type: "pullquote"; text: RichText; credit?: RichText }
   | { type: "collage"; blocks: RichBlock[]; caption?: RichBlockCaption }
   | { type: "slideshow"; blocks: RichBlock[]; caption?: RichBlockCaption }
-  | { type: "table"; cells: RichBlockTableCell[][]; is_bordered?: true; is_striped?: true; caption?: RichText }
+  | { type: "table"; cells: RichBlockTableCell[][]; is_bordered?: true; is_striped?: true; /** Bot API 10.3+ */ is_compact?: true; caption?: RichText }
   | { type: "details"; summary: RichText; blocks: RichBlock[]; is_open?: true }
   | { type: "map"; location: Location; zoom: Integer; width: Integer; height: Integer; caption?: RichBlockCaption }
   | { type: "animation"; animation: Animation; has_spoiler?: true; caption?: RichBlockCaption }
@@ -817,7 +848,13 @@ export type RichBlock =
   | { type: "video"; video: Video; has_spoiler?: true; caption?: RichBlockCaption }
   | { type: "voice_note"; voice_note: Voice; caption?: RichBlockCaption }
   /** sendRichMessageDraft only — never appears in a received Message. */
-  | { type: "thinking"; text: RichText };
+  | { type: "thinking"; text: RichText }
+  /** Bot API 10.3+: row of buttons attached to the rich message. */
+  | { type: "buttons"; buttons: RichMessageButton[] }
+  /** Bot API 10.3+: a block quotation which can be expanded or collapsed. */
+  | { type: "expandable_blockquote"; blocks: RichBlock[]; credit?: RichText }
+  /** Bot API 10.3+: a file (document) embedded in a rich message. */
+  | { type: "document"; document: Document; caption?: RichBlockCaption };
 
 /**
  * Input (send-side) counterpart of RichBlock for Bot API 10.2's block-based
@@ -847,7 +884,7 @@ export type InputRichBlock =
   | { type: "pullquote"; text: RichText; credit?: RichText }
   | { type: "collage"; blocks: InputRichBlock[]; caption?: RichBlockCaption }
   | { type: "slideshow"; blocks: InputRichBlock[]; caption?: RichBlockCaption }
-  | { type: "table"; cells: RichBlockTableCell[][]; is_bordered?: true; is_striped?: true; caption?: RichText }
+  | { type: "table"; cells: RichBlockTableCell[][]; is_bordered?: true; is_striped?: true; /** Bot API 10.3+ */ is_compact?: true; caption?: RichText }
   | { type: "details"; summary: RichText; blocks: InputRichBlock[]; is_open?: true }
   | { type: "map"; location: Location; zoom: Integer; width: Integer; height: Integer; caption?: RichBlockCaption }
   | { type: "animation"; animation: InputRichMediaRef; has_spoiler?: true; caption?: RichBlockCaption }
@@ -855,7 +892,30 @@ export type InputRichBlock =
   | { type: "photo"; photo: InputRichMediaRef; has_spoiler?: true; caption?: RichBlockCaption }
   | { type: "video"; video: InputRichMediaRef; has_spoiler?: true; caption?: RichBlockCaption }
   | { type: "voice_note"; voice_note: InputRichMediaRef; caption?: RichBlockCaption }
-  | { type: "thinking"; text: RichText };
+  | { type: "thinking"; text: RichText }
+  /** Bot API 10.3+: row of buttons to send. */
+  | { type: "buttons"; buttons: RichMessageButton[] }
+  /** Bot API 10.3+: an expandable/collapsible block quotation. */
+  | { type: "expandable_blockquote"; blocks: InputRichBlock[]; credit?: RichText }
+  /** Bot API 10.3+: embed a document (file) in a rich message. */
+  | { type: "document"; document: InputRichMediaRef; caption?: RichBlockCaption };
+
+/**
+ * Bot API 10.3+: replaces the individual `receiver_user_id` and
+ * `callback_query_id` parameters on send methods for ephemeral messages.
+ * Pass this as `ephemeral_message_parameters` instead.
+ */
+export interface EphemeralMessageParameters {
+  /** The user who will receive the ephemeral message. */
+  receiver_user_id: Integer;
+  /**
+   * If set, the ephemeral message will be shown in place of the message
+   * that triggered the callback query with this id.
+   */
+  callback_query_id?: string;
+  /** Bot API 10.3+: show the ephemeral message in place of the original message. */
+  replace_callback_query_message?: boolean;
+}
 
 // ---------- Updates ----------
 
@@ -886,6 +946,17 @@ export interface Update {
   removed_chat_boost?: ChatBoostRemoved;
   /** Bot API 10.0+ (Guest mode): the bot was @mentioned in a chat it isn't a member of. Exact shape not independently verified beyond the fields below — verify against current docs. */
   guest_message?: GuestMessage;
+  /** Bot API 10.3+: a user asked the bot to stop the generation of a message. */
+  stopped_message_generation?: MessageGenerationStopped;
+}
+
+/** Bot API 10.3+: update received when a user stops message generation (e.g. presses the stop button while a draft is streaming). */
+export interface MessageGenerationStopped {
+  chat: Chat;
+  message_thread_id?: Integer;
+  draft_id: Integer;
+  from: User;
+  date: Integer;
 }
 
 export interface GuestMessage {
@@ -1204,6 +1275,8 @@ export interface ChatAdministratorRights {
   can_manage_direct_messages?: boolean;
   /** Bot API 9.5+ */
   can_manage_tags?: boolean;
+  /** Bot API 10.3+: whether the administrator can send welcome messages (ephemeral messages sent to new members). */
+  can_send_welcome_messages?: boolean;
 }
 
 export interface SentWebAppMessage {
@@ -1284,6 +1357,8 @@ export interface ChatMember {
   until_date?: Integer;
   /** Bot API 9.5+: this member's tag, in chats that have tags enabled. */
   tag?: string;
+  /** Bot API 10.3+: administrator-only — whether this admin can send welcome messages. */
+  can_send_welcome_messages?: boolean;
 }
 
 export interface ChatInviteLink {
@@ -1842,6 +1917,12 @@ export interface UniqueGiftInfo {
   /** Bot API 9.3+ */
   last_resale_currency?: string;
   last_resale_amount?: Integer;
+  /** Bot API 10.3+ */
+  text?: string;
+  /** Bot API 10.3+ */
+  entities?: MessageEntity[];
+  /** Bot API 10.3+ */
+  is_private?: boolean;
 }
 
 export type OwnedGift = OwnedGiftRegular | OwnedGiftUnique;

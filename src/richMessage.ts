@@ -113,6 +113,7 @@ function findMediaRef(b: T.InputRichBlock): T.InputRichMediaRef | undefined {
     case "audio": return b.audio;
     case "animation": return b.animation;
     case "voice_note": return b.voice_note;
+    case "document": return b.document;
     default: return undefined;
   }
 }
@@ -184,6 +185,25 @@ export class RichBlocksBuilder {
   voiceNote(file: T.InputFile, opts: { caption?: T.RichBlockCaption } = {}): this {
     const id = this.media("voice_note", file);
     this.blocks.push({ type: "voice_note", voice_note: { id }, caption: opts.caption });
+    return this;
+  }
+
+  /** Bot API 10.3+: adds a document (file) block. */
+  document(file: T.InputFile, opts: { caption?: T.RichBlockCaption } = {}): this {
+    const id = this.media("document", file);
+    this.blocks.push({ type: "document", document: { id }, caption: opts.caption });
+    return this;
+  }
+
+  /** Bot API 10.3+: adds a row of buttons to the rich message. */
+  buttons(buttons: T.RichMessageButton[]): this {
+    this.blocks.push({ type: "buttons", buttons });
+    return this;
+  }
+
+  /** Bot API 10.3+: adds an expandable/collapsible block quotation. */
+  expandableBlockquote(blocks: T.InputRichBlock[], opts: { credit?: T.RichText } = {}): this {
+    this.blocks.push({ type: "expandable_blockquote", blocks, credit: opts.credit });
     return this;
   }
 

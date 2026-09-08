@@ -99,6 +99,7 @@ function findMediaRef(b) {
         case "audio": return b.audio;
         case "animation": return b.animation;
         case "voice_note": return b.voice_note;
+        case "document": return b.document;
         default: return undefined;
     }
 }
@@ -166,6 +167,22 @@ class RichBlocksBuilder {
     voiceNote(file, opts = {}) {
         const id = this.media("voice_note", file);
         this.blocks.push({ type: "voice_note", voice_note: { id }, caption: opts.caption });
+        return this;
+    }
+    /** Bot API 10.3+: adds a document (file) block. */
+    document(file, opts = {}) {
+        const id = this.media("document", file);
+        this.blocks.push({ type: "document", document: { id }, caption: opts.caption });
+        return this;
+    }
+    /** Bot API 10.3+: adds a row of buttons to the rich message. */
+    buttons(buttons) {
+        this.blocks.push({ type: "buttons", buttons });
+        return this;
+    }
+    /** Bot API 10.3+: adds an expandable/collapsible block quotation. */
+    expandableBlockquote(blocks, opts = {}) {
+        this.blocks.push({ type: "expandable_blockquote", blocks, credit: opts.credit });
         return this;
     }
     /** Escape hatch for block types without a dedicated method. If it references media by id, declare that media via .media() first, or build() will throw before you ever hit Telegram's 400. */

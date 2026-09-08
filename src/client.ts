@@ -16,32 +16,12 @@ export class TelegramApiError extends Error {
 }
 
 export interface ClientOptions {
-  /** Override the API root — useful for a local Bot API server (core.telegram.org/bots/api#using-a-local-bot-api-server). */
   apiRoot?: string;
-  /** Extra headers, custom fetch agent, etc. can go here later. */
   timeoutMs?: number;
-  /**
-   * Automatic flood-control handling: on HTTP 429, wait `retry_after` seconds
-   * and retry, up to `maxRetries` times (default 3). Applies to every call
-   * through this client, not just the polling loop.
-   */
   floodControl?: { maxRetries?: number };
-  /**
-   * Proactively space outgoing calls at least this many ms apart, globally,
-   * to stay under Telegram's rate limits before you ever hit a 429. Telegram
-   * allows roughly 30 messages/sec across all chats — ~35ms is a safe default
-   * if you enable this. Off by default (0).
-   */
   minIntervalMs?: number;
 }
 
-/**
- * Low-level transport. Every method on Api ultimately calls `call()`.
- * Because `call()` accepts any method name and params, ayotbl never goes
- * "out of date" when Telegram ships a new method — you can use it the same
- * day via `bot.api.call('newMethodName', {...})` while ayotbl catches up
- * with a typed wrapper.
- */
 export class Transport {
   private root: string;
   private maxRetries: number;
@@ -54,7 +34,6 @@ export class Transport {
     this.minIntervalMs = opts.minIntervalMs ?? 0;
   }
 
-  /** Serializes calls at least `minIntervalMs` apart when that option is set; otherwise runs immediately. */
   private schedule<T>(fn: () => Promise<T>): Promise<T> {
     if (!this.minIntervalMs) return fn();
     const result = this.queue.then(fn);
@@ -194,7 +173,7 @@ async function* buildMultipartBody(fields: Record<string, unknown>, boundary: st
   yield enc.encode(`--${boundary}--\r\n`);
 }
 
-// ---------- Common parameter shapes shared across many methods ----------
+// Common parameter shapes shared across many methods
 
 interface CommonSendOptions {
   message_thread_id?: T.Integer;
@@ -217,7 +196,10 @@ interface CommonSendOptions {
   /** Bot API 7.11+: send even if it would exceed the free daily broadcast limit, paying with Stars. */
   allow_paid_broadcast?: boolean;
   /** Bot API 10.2+: make this message visible only to a specific user (Ephemeral Messages). */
+  ephemeral_message_parameters?: T.EphemeralMessageParameters;
+  /** @deprecated use ephemeral_message_parameters instead — kept for backward compatibility with 10.2 code. */
   receiver_user_id?: T.Integer;
+  /** @deprecated use ephemeral_message_parameters instead — kept for backward compatibility with 10.2 code. */
   callback_query_id?: string;
 }
 
@@ -252,11 +234,6 @@ interface SendPollParams extends CommonSendOptions {
   media?: T.PollMedia;
 }
 
-/**
- * The full, typed Bot API surface. Grouped by category to match the official
- * docs (core.telegram.org/bots/api) so anything you're used to in aiogram or
- * telegraf has an obvious equivalent name here.
- */
 export class Api {
   constructor(private transport: Transport) {}
 
@@ -295,7 +272,7 @@ export class Api {
    * verify sendMessageDraft's exact parameters beyond its existence and
    * purpose in the official changelog.
    */
-  sendMessageDraft(params: { chat_id: T.Integer; message_thread_id?: T.Integer; draft_id: T.Integer; text: string; parse_mode?: T.ParseMode; entities?: T.MessageEntity[] }) {
+  sendMessageDraft(params: { chat_id: T.Integer; message_thread_id?: T.Integer; draft_id: T.Integer; text: string; parse_mode?: T.ParseMode; entities?: T.MessageEntity[]; /** Bot API 10.3+: whether the user can stop generation of this draft. */ can_stop?: boolean; /** Bot API 10.3+: whether to keep the draft visible after stopping. */ keep_on_stop?: boolean }) {
     return this.call<true>("sendMessageDraft", params);
   }
   /** New in Bot API 10.1 — structured tables, checklists, blockquotes, inline media, streamed or not. */
@@ -309,7 +286,7 @@ export class Api {
    * draft_id must be non-zero; repeated calls with the same draft_id animate
    * between states. Private chats only (chat_id must be the numeric user id).
    */
-  sendRichMessageDraft(params: { chat_id: T.Integer; message_thread_id?: T.Integer; draft_id: T.Integer; rich_message: T.InputRichMessage }) {
+  sendRichMessageDraft(params: { chat_id: T.Integer; message_thread_id?: T.Integer; draft_id: T.Integer; rich_message: T.InputRichMessage; /** Bot API 10.3+: whether the user can stop generation of this draft. */ can_stop?: boolean; /** Bot API 10.3+: whether to keep the draft visible after stopping. */ keep_on_stop?: boolean }) {
     return this.call<true>("sendRichMessageDraft", params);
   }
   forwardMessage(params: { chat_id: T.ChatId; from_chat_id: T.ChatId; message_id: T.Integer; message_thread_id?: T.Integer; disable_notification?: boolean; protect_content?: boolean; message_effect_id?: string; video_start_timestamp?: T.Integer }) {
@@ -409,13 +386,13 @@ export class Api {
   deleteMessages(params: { chat_id: T.ChatId; message_ids: T.Integer[] }) { return this.call<true>("deleteMessages", params); }
 
   // ----- Ephemeral Messages (Bot API 10.2) -----
-  editEphemeralMessageText(params: { receiver_user_id: T.Integer; chat_id?: T.ChatId; ephemeral_message_id: T.Integer; text: string; parse_mode?: T.ParseMode; entities?: T.MessageEntity[]; reply_markup?: T.InlineKeyboardMarkup }) {
+  editEphemeralMessageText(params: { receiver_user_id: T.Integer; chat_id?: T.ChatId; ephemeral_message_id: T.Integer; text: string; parse_mode?: T.ParseMode; entities?: T.MessageEntity[]; /** Bot API 10.3+: replace the text with a rich message instead. */ rich_message?: T.InputRichMessage; reply_markup?: T.InlineKeyboardMarkup }) {
     return this.call<T.Message | true>("editEphemeralMessageText", params);
   }
   editEphemeralMessageMedia(params: { receiver_user_id: T.Integer; chat_id?: T.ChatId; ephemeral_message_id: T.Integer; media: T.InputMedia; reply_markup?: T.InlineKeyboardMarkup }) {
     return this.call<T.Message | true>("editEphemeralMessageMedia", params);
   }
-  editEphemeralMessageCaption(params: { receiver_user_id: T.Integer; chat_id?: T.ChatId; ephemeral_message_id: T.Integer; caption?: string; parse_mode?: T.ParseMode; reply_markup?: T.InlineKeyboardMarkup }) {
+  editEphemeralMessageCaption(params: { receiver_user_id: T.Integer; chat_id?: T.ChatId; ephemeral_message_id: T.Integer; caption?: string; parse_mode?: T.ParseMode; /** Bot API 10.3+: show caption above the media. */ show_caption_above_media?: boolean; reply_markup?: T.InlineKeyboardMarkup }) {
     return this.call<T.Message | true>("editEphemeralMessageCaption", params);
   }
   editEphemeralMessageReplyMarkup(params: { receiver_user_id: T.Integer; chat_id?: T.ChatId; ephemeral_message_id: T.Integer; reply_markup?: T.InlineKeyboardMarkup }) {
@@ -445,7 +422,7 @@ export class Api {
   banChatMember(params: { chat_id: T.ChatId; user_id: T.Integer; until_date?: T.Integer; revoke_messages?: boolean }) { return this.call<true>("banChatMember", params); }
   unbanChatMember(params: { chat_id: T.ChatId; user_id: T.Integer; only_if_banned?: boolean }) { return this.call<true>("unbanChatMember", params); }
   restrictChatMember(params: { chat_id: T.ChatId; user_id: T.Integer; permissions: T.ChatPermissions; until_date?: T.Integer }) { return this.call<true>("restrictChatMember", params); }
-  promoteChatMember(params: { chat_id: T.ChatId; user_id: T.Integer; is_anonymous?: boolean; can_manage_chat?: boolean; can_delete_messages?: boolean; can_manage_video_chats?: boolean; can_restrict_members?: boolean; can_promote_members?: boolean; can_change_info?: boolean; can_invite_users?: boolean; can_post_messages?: boolean; can_edit_messages?: boolean; can_pin_messages?: boolean; can_post_stories?: boolean; can_edit_stories?: boolean; can_delete_stories?: boolean; can_manage_topics?: boolean; can_manage_direct_messages?: boolean; can_manage_tags?: boolean }) { return this.call<true>("promoteChatMember", params); }
+  promoteChatMember(params: { chat_id: T.ChatId; user_id: T.Integer; is_anonymous?: boolean; can_manage_chat?: boolean; can_delete_messages?: boolean; can_manage_video_chats?: boolean; can_restrict_members?: boolean; can_promote_members?: boolean; can_change_info?: boolean; can_invite_users?: boolean; can_post_messages?: boolean; can_edit_messages?: boolean; can_pin_messages?: boolean; can_post_stories?: boolean; can_edit_stories?: boolean; can_delete_stories?: boolean; can_manage_topics?: boolean; can_manage_direct_messages?: boolean; can_manage_tags?: boolean; /** Bot API 10.3+: whether the admin can send welcome messages to new members. */ can_send_welcome_messages?: boolean }) { return this.call<true>("promoteChatMember", params); }
   setChatAdministratorCustomTitle(params: { chat_id: T.ChatId; user_id: T.Integer; custom_title: string }) { return this.call<true>("setChatAdministratorCustomTitle", params); }
   /** Bot API 9.5+: set a member's tag, in chats that have tags enabled. */
   setChatMemberTag(params: { chat_id: T.ChatId; user_id: T.Integer; tag?: string }) { return this.call<true>("setChatMemberTag", params); }
@@ -661,11 +638,6 @@ export class Api {
   /** Respond to a guest_message update, matching the shape of answerWebAppQuery. */
   answerGuestQuery(params: { guest_query_id: string; result: T.InlineQueryResult }) { return this.call<T.SentWebAppMessage>("answerGuestQuery", params); }
 
-  // ----- Managed Bots (Bot API 9.5/9.6) -----
-  // NOTE: these two methods are newer than telegraf v4's own coverage (telegraf hasn't
-  // added them as of this writing), so they're implemented from the Bot API changelog
-  // directly rather than cross-checked against telegraf. Verify against the current
-  // core.telegram.org/bots/api docs before depending on them in production.
   /** Retrieve the token of a bot your bot manages, after it's created via the newbot deep link flow. */
   getManagedBotToken(params: { bot_id: T.Integer }) { return this.call<{ token: string }>("getManagedBotToken", params); }
   replaceManagedBotToken(params: { bot_id: T.Integer }) { return this.call<{ token: string }>("replaceManagedBotToken", params); }

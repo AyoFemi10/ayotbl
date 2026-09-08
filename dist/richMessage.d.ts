@@ -90,6 +90,16 @@ export declare class RichBlocksBuilder {
     voiceNote(file: T.InputFile, opts?: {
         caption?: T.RichBlockCaption;
     }): this;
+    /** Bot API 10.3+: adds a document (file) block. */
+    document(file: T.InputFile, opts?: {
+        caption?: T.RichBlockCaption;
+    }): this;
+    /** Bot API 10.3+: adds a row of buttons to the rich message. */
+    buttons(buttons: T.RichMessageButton[]): this;
+    /** Bot API 10.3+: adds an expandable/collapsible block quotation. */
+    expandableBlockquote(blocks: T.InputRichBlock[], opts?: {
+        credit?: T.RichText;
+    }): this;
     /** Escape hatch for block types without a dedicated method. If it references media by id, declare that media via .media() first, or build() will throw before you ever hit Telegram's 400. */
     raw(block: T.InputRichBlock): this;
     build(): T.InputRichMessage;

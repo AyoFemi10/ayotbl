@@ -17,13 +17,6 @@ class TelegramApiError extends Error {
     }
 }
 exports.TelegramApiError = TelegramApiError;
-/**
- * Low-level transport. Every method on Api ultimately calls `call()`.
- * Because `call()` accepts any method name and params, ayotbl never goes
- * "out of date" when Telegram ships a new method — you can use it the same
- * day via `bot.api.call('newMethodName', {...})` while ayotbl catches up
- * with a typed wrapper.
- */
 class Transport {
     token;
     root;
@@ -36,7 +29,6 @@ class Transport {
         this.maxRetries = opts.floodControl?.maxRetries ?? 3;
         this.minIntervalMs = opts.minIntervalMs ?? 0;
     }
-    /** Serializes calls at least `minIntervalMs` apart when that option is set; otherwise runs immediately. */
     schedule(fn) {
         if (!this.minIntervalMs)
             return fn();
@@ -161,11 +153,6 @@ async function* buildMultipartBody(fields, boundary) {
     }
     yield enc.encode(`--${boundary}--\r\n`);
 }
-/**
- * The full, typed Bot API surface. Grouped by category to match the official
- * docs (core.telegram.org/bots/api) so anything you're used to in aiogram or
- * telegraf has an obvious equivalent name here.
- */
 class Api {
     transport;
     constructor(transport) {
@@ -529,11 +516,6 @@ class Api {
     // ----- Guest mode (Bot API 10.0+) — bots being mentioned/queried by users they have no direct relationship with -----
     /** Respond to a guest_message update, matching the shape of answerWebAppQuery. */
     answerGuestQuery(params) { return this.call("answerGuestQuery", params); }
-    // ----- Managed Bots (Bot API 9.5/9.6) -----
-    // NOTE: these two methods are newer than telegraf v4's own coverage (telegraf hasn't
-    // added them as of this writing), so they're implemented from the Bot API changelog
-    // directly rather than cross-checked against telegraf. Verify against the current
-    // core.telegram.org/bots/api docs before depending on them in production.
     /** Retrieve the token of a bot your bot manages, after it's created via the newbot deep link flow. */
     getManagedBotToken(params) { return this.call("getManagedBotToken", params); }
     replaceManagedBotToken(params) { return this.call("replaceManagedBotToken", params); }

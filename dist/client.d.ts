@@ -12,33 +12,13 @@ export declare class TelegramApiError extends Error {
     } | undefined);
 }
 export interface ClientOptions {
-    /** Override the API root — useful for a local Bot API server (core.telegram.org/bots/api#using-a-local-bot-api-server). */
     apiRoot?: string;
-    /** Extra headers, custom fetch agent, etc. can go here later. */
     timeoutMs?: number;
-    /**
-     * Automatic flood-control handling: on HTTP 429, wait `retry_after` seconds
-     * and retry, up to `maxRetries` times (default 3). Applies to every call
-     * through this client, not just the polling loop.
-     */
     floodControl?: {
         maxRetries?: number;
     };
-    /**
-     * Proactively space outgoing calls at least this many ms apart, globally,
-     * to stay under Telegram's rate limits before you ever hit a 429. Telegram
-     * allows roughly 30 messages/sec across all chats — ~35ms is a safe default
-     * if you enable this. Off by default (0).
-     */
     minIntervalMs?: number;
 }
-/**
- * Low-level transport. Every method on Api ultimately calls `call()`.
- * Because `call()` accepts any method name and params, ayotbl never goes
- * "out of date" when Telegram ships a new method — you can use it the same
- * day via `bot.api.call('newMethodName', {...})` while ayotbl catches up
- * with a typed wrapper.
- */
 export declare class Transport {
     private token;
     private root;
@@ -46,7 +26,6 @@ export declare class Transport {
     private minIntervalMs;
     private queue;
     constructor(token: string, opts?: ClientOptions);
-    /** Serializes calls at least `minIntervalMs` apart when that option is set; otherwise runs immediately. */
     private schedule;
     call<TResult = unknown>(method: string, params?: object, attempt?: number): Promise<TResult>;
     private performCall;
@@ -74,7 +53,10 @@ interface CommonSendOptions {
     /** Bot API 7.11+: send even if it would exceed the free daily broadcast limit, paying with Stars. */
     allow_paid_broadcast?: boolean;
     /** Bot API 10.2+: make this message visible only to a specific user (Ephemeral Messages). */
+    ephemeral_message_parameters?: T.EphemeralMessageParameters;
+    /** @deprecated use ephemeral_message_parameters instead — kept for backward compatibility with 10.2 code. */
     receiver_user_id?: T.Integer;
+    /** @deprecated use ephemeral_message_parameters instead — kept for backward compatibility with 10.2 code. */
     callback_query_id?: string;
 }
 interface SendPollParams extends CommonSendOptions {
@@ -112,11 +94,6 @@ interface SendPollParams extends CommonSendOptions {
     country_codes?: string[];
     media?: T.PollMedia;
 }
-/**
- * The full, typed Bot API surface. Grouped by category to match the official
- * docs (core.telegram.org/bots/api) so anything you're used to in aiogram or
- * telegraf has an obvious equivalent name here.
- */
 export declare class Api {
     private transport;
     constructor(transport: Transport);
@@ -165,7 +142,9 @@ export declare class Api {
         draft_id: T.Integer;
         text: string;
         parse_mode?: T.ParseMode;
-        entities?: T.MessageEntity[];
+        entities?: T.MessageEntity[]; /** Bot API 10.3+: whether the user can stop generation of this draft. */
+        can_stop?: boolean; /** Bot API 10.3+: whether to keep the draft visible after stopping. */
+        keep_on_stop?: boolean;
     }): Promise<true>;
     /** New in Bot API 10.1 — structured tables, checklists, blockquotes, inline media, streamed or not. */
     sendRichMessage(params: {
@@ -183,7 +162,9 @@ export declare class Api {
         chat_id: T.Integer;
         message_thread_id?: T.Integer;
         draft_id: T.Integer;
-        rich_message: T.InputRichMessage;
+        rich_message: T.InputRichMessage; /** Bot API 10.3+: whether the user can stop generation of this draft. */
+        can_stop?: boolean; /** Bot API 10.3+: whether to keep the draft visible after stopping. */
+        keep_on_stop?: boolean;
     }): Promise<true>;
     forwardMessage(params: {
         chat_id: T.ChatId;
@@ -406,7 +387,8 @@ export declare class Api {
         ephemeral_message_id: T.Integer;
         text: string;
         parse_mode?: T.ParseMode;
-        entities?: T.MessageEntity[];
+        entities?: T.MessageEntity[]; /** Bot API 10.3+: replace the text with a rich message instead. */
+        rich_message?: T.InputRichMessage;
         reply_markup?: T.InlineKeyboardMarkup;
     }): Promise<true | T.Message>;
     editEphemeralMessageMedia(params: {
@@ -421,7 +403,8 @@ export declare class Api {
         chat_id?: T.ChatId;
         ephemeral_message_id: T.Integer;
         caption?: string;
-        parse_mode?: T.ParseMode;
+        parse_mode?: T.ParseMode; /** Bot API 10.3+: show caption above the media. */
+        show_caption_above_media?: boolean;
         reply_markup?: T.InlineKeyboardMarkup;
     }): Promise<true | T.Message>;
     editEphemeralMessageReplyMarkup(params: {
@@ -487,7 +470,8 @@ export declare class Api {
         can_delete_stories?: boolean;
         can_manage_topics?: boolean;
         can_manage_direct_messages?: boolean;
-        can_manage_tags?: boolean;
+        can_manage_tags?: boolean; /** Bot API 10.3+: whether the admin can send welcome messages to new members. */
+        can_send_welcome_messages?: boolean;
     }): Promise<true>;
     setChatAdministratorCustomTitle(params: {
         chat_id: T.ChatId;

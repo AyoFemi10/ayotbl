@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.2.4 — Bot API 10.3
+
+### Added
+- **`EphemeralMessageParameters`** type (Bot API 10.3) — replaces the individual `receiver_user_id` + `callback_query_id` params on send methods. The old fields are kept as deprecated for backward compatibility. New field: `replace_callback_query_message` (show ephemeral message in place of the original).
+- **`CommunityChatJoined`** type + `Message.community_chat_joined` field — service message when a chat joins a community.
+- **`promoteChatMember`** now accepts `can_send_welcome_messages` — grant/revoke the right to send ephemeral welcome messages to new members.
+- **`sendMessageDraft` / `sendRichMessageDraft`** now accept `can_stop` and `keep_on_stop` — let users stop streaming generation and control what happens to the draft afterward.
+- **`editEphemeralMessageText`** now accepts `rich_message` — replace the text of an ephemeral message with a structured rich message.
+- **`editEphemeralMessageCaption`** now accepts `show_caption_above_media`.
+- **`RichBlocksBuilder`** — three new convenience methods:
+  - `.document(file, opts?)` — embed a file/document block (Bot API 10.3 `tg://document?id=` support).
+  - `.buttons(buttons)` — add a row of `RichMessageButton` objects to the message.
+  - `.expandableBlockquote(blocks, opts?)` — collapsible block quotation.
+- **`findMediaRef`** helper in `richMessage.ts` updated to recognise `document` blocks, so the pre-send media-id validation catches missing document media refs too.
+
+### Already in types before this release (verified against the 10.3 changelog)
+- `RichMessageButton`, `RichTextTagged { type: "button" }`, `InputRichBlock / RichBlock` `buttons` / `expandable_blockquote` / `document` variants, `RichMessage.buttons`, `InlineKeyboardButton.disabled` + `DisabledButton`, `InlineKeyboardMarkup.force_reply`, `ReplyKeyboardMarkup.force_reply`, `UniqueGiftInfo.text` / `.entities` / `.is_private`, `ChatAdministratorRights.can_send_welcome_messages`, `ChatMember.can_send_welcome_messages`, `Update.stopped_message_generation` + `MessageGenerationStopped`, `InputRichMessageMedia` `"document"` type, `RichBlockTable.is_compact` / `InputRichBlockTable.is_compact`.
+
 ## 0.2.1 — Bug fixes from live testing
 
 ### Fixed (confirmed by real Telegram 400 errors)
