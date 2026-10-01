@@ -285,6 +285,30 @@ export interface InaccessibleMessage {
 }
 export type MaybeInaccessibleMessage = Message | InaccessibleMessage;
 
+export interface Game {
+  title: string;
+  description: string;
+  photo: PhotoSize[];
+  text?: string;
+  text_entities?: string;
+  animation?: Animation;
+}
+
+export interface ProximityAlertTriggered{
+  traveler: User;
+  watcher: User;
+  distance: Integer;
+}
+
+export interface ChatBoostAdded{
+  boost_count: Integer;
+}
+
+export interface WebAppData{
+  data: string;
+  button_text: string;
+}
+
 export interface Message {
   message_id: Integer;
   message_thread_id?: Integer;
@@ -401,6 +425,30 @@ export interface Message {
   refunded_payment?: RefundedPayment;
   invoice?: Invoice;
   passport_data?: PassportData;
+  via_bot?: User; 
+  has_protected_content?: boolean;
+  is_from_offline?: boolean;
+  media_group_id?: string;
+  author_signature?: string;
+  effect_id?: string;
+  live_photo?: LivePhoto;
+  has_media_spoiler?: boolean;
+  game?: Game;
+  delete_chat_photo?: boolean;
+  group_chat_created?: boolean;
+  supergroup_chat_created?: boolean;
+  channel_chat_created?: boolean;
+  migrate_to_chat_id?: Integer;
+  migrate_from_chat_id?: Integer;
+  connected_website?: string;
+  proximity_alert_triggered?: ProximityAlertTriggered;
+  boost_added?: ChatBoostAdded;
+  chat_background_set?: ChatBackground;
+  managed_bot_created?: ManagedBotCreated;
+  web_app_data?: WebAppData;
+  sender_boost_count?: Integer;
+  sender_business_bot: User;
+  guest_query_id: string;
   [extra: string]: unknown;
 }
 
